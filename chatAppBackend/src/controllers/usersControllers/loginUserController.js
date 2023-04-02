@@ -2,6 +2,7 @@ const { User } = require("../../models/model.js");
 
 const loginUserController = async (req, res) => {
   const { password, email } = req.body;
+  console.log(req.body);
 
   try {
     const user = await User.findOne({ email });

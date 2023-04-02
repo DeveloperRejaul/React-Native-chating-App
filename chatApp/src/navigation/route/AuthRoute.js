@@ -7,8 +7,6 @@ export default function AuthRoute({Stack}) {
   const [first, setfirst] = useState(false);
   const state = useSelector(state => state);
 
-  console.log();
-
   const {auth} = state.auth;
 
   return (

@@ -23,7 +23,7 @@ export default function ChatUI({navigation}) {
 
   return (
     <>
-      <HeaderCom text={'ChatUi'} onPress={() => navigation.goBack()} />
+      <HeaderCom text={'ChatUi'} onPress={() => navigation.goBack()} back />
       <View style={styles.container}>
         <FlatList
           data={userData}

@@ -1,14 +1,20 @@
 import {StyleSheet, Text, View, Pressable} from 'react-native';
 import React from 'react';
 import {rf, rh, rw} from '../utitils/dimensions.js';
+import {Spinner} from 'native-base';
 
-export default function HeaderCom({text, onPress}) {
+export default function HeaderCom({text, onPress, back, loading}) {
   return (
     <View style={styles.container}>
       <Pressable onPress={onPress}>
-        <Text style={styles.back}>Back</Text>
+        {back && <Text style={styles.back}>Back</Text>}
       </Pressable>
-      <Text style={styles.title}>{text}</Text>
+
+      {loading ? (
+        <Spinner color={'#fff'} />
+      ) : (
+        <Text style={styles.title}>{text}</Text>
+      )}
       <Text></Text>
     </View>
   );

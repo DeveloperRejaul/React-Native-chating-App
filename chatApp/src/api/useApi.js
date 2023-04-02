@@ -9,6 +9,7 @@ export default () => {
   // Get Mathod
   const getData = async url => {
     setLoading(true);
+
     await fetch(url)
       .then(res => {
         setStatus(res.status);

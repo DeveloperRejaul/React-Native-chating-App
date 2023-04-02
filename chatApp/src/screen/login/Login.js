@@ -6,28 +6,30 @@ import HeaderCom from '../../component/HeaderCom.js';
 import useApi from '../../api/useApi.js';
 import {useDispatch} from 'react-redux';
 import {handleAuth} from '../../redux/features/AuthSlice.js';
+import appInfo from '../../constent/appInfo.js';
 export default function Login({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const {postData, status} = useApi();
+  const {postData, status, loading} = useApi();
   const dispatch = useDispatch();
 
   const handleLogin = async () => {
-    await postData('http://172.30.144.1:3000/api/users/login', {
+    await postData(appInfo.loginUserUrl, {
       email,
       password,
     });
-  };
-
-  useEffect(() => {
     if (status === 200) {
       dispatch(handleAuth());
     }
-  }, [status]);
+  };
 
   return (
     <>
-      <HeaderCom text={'Login'} onPress={() => navigation.goBack()} />
+      <HeaderCom
+        text={'Login'}
+        onPress={() => navigation.goBack()}
+        loading={loading}
+      />
       <View style={styles.container}>
         <InputCom
           lable={'Email'}

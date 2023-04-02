@@ -1,0 +1,31 @@
+{
+  "workbench.view.alwaysShowHeaderActions": false,
+  "workbench.editor.autoLockGroups": {
+    "default": true
+  },
+  "workbench.editor.enablePreviewFromCodeNavigation": true,
+  "workbench.editor.enablePreviewFromQuickOpen": true,
+  "workbench.editor.highlightModifiedTabs": true,
+  "workbench.editor.limit.enabled": true,
+  "workbench.editor.limit.perEditorGroup": true,
+  "workbench.settings.useSplitJSON": false,
+  "window.commandCenter": false,
+  "explorer.excludeGitIgnore": false,
+  "editor.quickSuggestions": {
+    "comments": "on",
+    "strings": "on"
+  },
+  "editor.suggestLineHeight": 14,
+  "editor.suggestFontSize": 14,
+  "files.associations": {
+    "\"js\"": "\"js\""
+  },
+  "files.autoGuessEncoding": true,
+  "files.autoSave": "afterDelay",
+  "auto-rename-tag.activationOnLanguage": ["*"],
+  "editor.wordWrap": "on",
+  "files.simpleDialog.enable": true,
+  "workbench.colorCustomizations": {},
+  "autoimport.filesToScan": "**/*.{ts,tsx,js,jsx}",
+  "spring.initializr.serviceUrl": ""
+}

@@ -1,29 +1,28 @@
 import {StyleSheet, View} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import HeaderCom from '../../component/HeaderCom.js';
-import userdata from '../../utitils/data.js';
 import UsersUI from './component/UsersUI.js';
-import useApi from '../../api/useApi.js';
 import websocket from '../../socket/socketio.service.js';
+import useApi from '../../api/useApi.js';
+import appInfo from '../../constent/appInfo.js';
 
 export default function MainScreen({navigation}) {
   const [userData, setuserData] = useState([]);
-  const {getData, data, status} = useApi();
+  const {data, getData, status} = useApi();
   useEffect(() => {
+    getData(appInfo.getAlluserUrl);
     websocket.InitializeSocket();
-  }, []);
-
-  useEffect(() => {
-    getData('http://172.30.144.1:3000/api/users');
+    websocket.emit('send-message', 'hello server');
+    websocket.on('send-data-from-server', data => {
+      console.log(data);
+    });
   }, []);
 
   useEffect(() => {
     if (status === 200) {
-      setuserData([...data.data]);
+      setuserData([...data.users]);
     }
   }, [data]);
-
-  websocket.emit(('resive_message', () => {}));
 
   return (
     <>

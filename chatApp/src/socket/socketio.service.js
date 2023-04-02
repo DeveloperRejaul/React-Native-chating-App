@@ -1,6 +1,7 @@
 import socketIO from 'socket.io-client';
-// Initialize Socket IO:
-const SOCKET_URL = 'http://172.30.144.1:3000/';
+import appInfo from '../constent/appInfo.js';
+
+const SOCKET_URL = appInfo.url;
 
 class Websocket {
   InitializeSocket = async () => {
@@ -26,16 +27,12 @@ class Websocket {
     }
   };
 
-  emit(event, data = {}) {
+  emit(event, data) {
     this.socket.emit(event, data);
   }
   on(event, cb) {
     this.socket.on(event, cb);
   }
-
-  // removeListener(event, listenerName) {
-  //   this.socket.removeListener(event, listenerName);
-  // }
 }
 
 const websocket = new Websocket();
