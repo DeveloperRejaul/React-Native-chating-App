@@ -1,6 +1,7 @@
 const { User } = require("../../models/model.js");
 
 const assecsAllUsersController = async (req, res) => {
+  console.log("hello");
   try {
     const users = await User.find();
     res.status(200).send({ users });

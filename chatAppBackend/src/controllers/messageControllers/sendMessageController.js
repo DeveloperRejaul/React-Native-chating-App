@@ -1,6 +1,8 @@
 const { Message, Room } = require("../../models/model.js");
 
 const sendMessageController = async (req, res) => {
+  // console.log(text, sender, chatRoom);
+
   try {
     const { text, sender, chatRoom } = req.body;
     const message = new Message({ text, sender, chatRoom });

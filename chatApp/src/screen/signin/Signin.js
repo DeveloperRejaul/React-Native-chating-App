@@ -6,6 +6,7 @@ import {rf, rh, rw} from '../../utitils/dimensions.js';
 import {launchImageLibrary} from 'react-native-image-picker';
 import HeaderCom from '../../component/HeaderCom.js';
 import useApi from '../../api/useApi.js';
+import appInfo from '../../constent/appInfo.js';
 
 export default function Signin({navigation}) {
   const [profileFileName, setProfileFileName] = useState('No file choose');
@@ -25,7 +26,7 @@ export default function Signin({navigation}) {
   };
 
   const handleSignin = async () => {
-    await postData('http://172.30.144.1:3000/api/users', {
+    await postData(`${appInfo.url}/api/user/register`, {
       name: name,
       email: email,
       password: confirmPassword,

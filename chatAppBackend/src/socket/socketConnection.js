@@ -8,6 +8,11 @@ const socketConnection = (socket, io) => {
     console.log(data);
   });
 
+  socket.on("joinRoom", (roomName, callback) => {
+    socket.join(roomName);
+    callback("joined");
+  });
+
   socket.emit("send-data-from-server", "hello client");
 };
 

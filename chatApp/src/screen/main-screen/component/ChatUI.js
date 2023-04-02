@@ -8,15 +8,44 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import HeaderCom from '../../../component/HeaderCom.js';
-import {ChatData} from '../../../utitils/data.js';
 import SmsContent from './SmsContent.js';
 import {rf, rh, rw} from '../../../utitils/dimensions.js';
+import {useSelector} from 'react-redux';
+import appInfo from '../../../constent/appInfo.js';
+
+const ChatData = [
+  {
+    message: 'Hi',
+    type: 'send',
+  },
+  {
+    message: 'Hello',
+    type: 'resive',
+  },
+];
 
 export default function ChatUI({navigation}) {
   const [userData, setUserData] = useState(ChatData);
   const [message, setMessage] = useState('');
+  const userId = useSelector(state => state.auth.userId);
+  const roomId = useSelector(state => state.oneByOneChat.roomId);
 
-  const handleMessage = () => {
+  const handleMessage = async () => {
+    console.log(roomId, message, userId);
+    await fetch(`${appInfo.url}/api/message`, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+      body: JSON.stringify({
+        text: message,
+        sender: userId,
+        chatRoom: roomId,
+      }),
+    })
+      .then(res => res.json())
+      .then(res => console.log(res));
+
     setUserData([{message: message, type: 'send'}, ...userData]);
     setMessage('');
   };

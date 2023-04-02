@@ -45,7 +45,9 @@ export default () => {
           return res.json();
         }
       })
-      .then(res => setdata(res.data))
+      .then(res => {
+        setdata(res);
+      })
       .catch(err => {
         setError(err);
         setLoading(false);

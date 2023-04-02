@@ -4,16 +4,18 @@ import {persistReducer} from 'redux-persist';
 import thunk from 'redux-thunk';
 import AuthReducer from '../features/AuthSlice.js';
 import SplassReducer from '../features/SplassSlice.js';
+import oneByOneChatReducer from '../features/oneByOneChatSlice';
 
 const reducer = combineReducers({
   auth: AuthReducer,
   splass: SplassReducer,
+  oneByOneChat: oneByOneChatReducer,
 });
 
 const persistConfig = {
   key: '@root',
   storage: AsyncStorage,
-  whitelist: ['Splass'],
+  blacklist: ['Splass', 'Auth'],
 };
 
 const persistedReducer = persistReducer(persistConfig, reducer);

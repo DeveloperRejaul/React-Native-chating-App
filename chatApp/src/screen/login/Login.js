@@ -10,7 +10,7 @@ import appInfo from '../../constent/appInfo.js';
 export default function Login({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const {postData, status, loading} = useApi();
+  const {postData, status, loading, data} = useApi();
   const dispatch = useDispatch();
 
   const handleLogin = async () => {
@@ -18,10 +18,13 @@ export default function Login({navigation}) {
       email,
       password,
     });
-    if (status === 200) {
-      dispatch(handleAuth());
-    }
   };
+
+  useEffect(() => {
+    if (data != '' && status === 200) {
+      dispatch(handleAuth({userInfo: data}));
+    }
+  }, [data, status]);
 
   return (
     <>

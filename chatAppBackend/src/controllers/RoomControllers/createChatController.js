@@ -18,7 +18,6 @@ const createChatController = async (req, res) => {
       isOneOnOneChat: true,
     });
 
-    console.log(chatRoom);
     if (chatRoom) {
       return res.status(200).json(chatRoom);
     }

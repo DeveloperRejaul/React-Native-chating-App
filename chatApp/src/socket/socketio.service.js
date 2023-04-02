@@ -27,8 +27,8 @@ class Websocket {
     }
   };
 
-  emit(event, data) {
-    this.socket.emit(event, data);
+  emit(event, data, callback) {
+    this.socket.emit(event, data, callback);
   }
   on(event, cb) {
     this.socket.on(event, cb);
