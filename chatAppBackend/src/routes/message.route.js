@@ -4,6 +4,6 @@ const sendMessageController = require("../controllers/messageControllers/sendMes
 const router = require("express").Router();
 
 router.post("/", sendMessageController);
-router.get("/", getMessageController);
+router.get("/:roomId", getMessageController);
 
 module.exports = router;

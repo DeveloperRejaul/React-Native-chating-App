@@ -9,7 +9,6 @@ const UsersUI = ({ele, index, onPress}) => {
       <View style={styles.imageBody}>
         <Image
           defaultSource={imagePhat.profilePicture}
-          // source={{uri: ele.picture}}
           source={imagePhat.profilePicture}
           style={styles.image}
         />

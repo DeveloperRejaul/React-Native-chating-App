@@ -17,6 +17,8 @@ export default function ChatScreen({navigation}) {
   const dispatch = useDispatch();
   const myEmail = useSelector(state => state.auth.email);
   const myId = useSelector(state => state.auth.userId);
+  // const lestMessage = useSelector(state => state.oneByOneChat.lestMessage);
+  // // console.log(lestMessage);
 
   useEffect(() => {
     getData(appInfo.getAlluserUrl);
@@ -67,20 +69,22 @@ export default function ChatScreen({navigation}) {
     websocket.emit('joinRoom', roomId, res => {
       console.log(res);
     });
-    navigation.navigate('ChatUI');
+    navigation.navigate('ChatUI', {receiverId: ele._id});
   };
 
   return (
     <>
       <HeaderCom text={'Your Messanger'} />
       <View style={styles.container}>
-        {userData.map((ele, index) => (
-          <UsersUI
-            onPress={() => handleChat(ele)}
-            key={index}
-            {...{ele, index}}
-          />
-        ))}
+        {userData.map((ele, index) => {
+          return (
+            <UsersUI
+              onPress={() => handleChat(ele)}
+              key={index}
+              {...{ele, index}}
+            />
+          );
+        })}
 
         <Text onPress={() => dispatch(logOut())}>LogOut</Text>
       </View>
