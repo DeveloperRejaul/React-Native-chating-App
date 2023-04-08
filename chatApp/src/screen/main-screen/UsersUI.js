@@ -3,7 +3,7 @@ import React, {memo} from 'react';
 import {rf, rh, rw} from '../../utitils/dimensions.js';
 import imagePhat from '../../constent/imagePhat.js';
 
-const UsersUI = ({ele, index, onPress, latestMessage}) => {
+const UsersUI = ({ele, index, onPress, lastMessage}) => {
   return (
     <TouchableOpacity onPress={onPress} key={index} style={styles.userBody}>
       <View style={styles.imageBody}>
@@ -14,22 +14,14 @@ const UsersUI = ({ele, index, onPress, latestMessage}) => {
         />
       </View>
       <Text style={styles.userName}>{ele.name}</Text>
-      <LatestMessage {...{latestMessage, ele}} />
+      {lastMessage?.map((message, i) => (
+        <Text>
+          {message.receiverId === ele._id && message.lastMessage?.text}
+        </Text>
+      ))}
     </TouchableOpacity>
   );
 };
-
-function LatestMessage({latestMessage, ele}) {
-  return (
-    <>
-      {latestMessage.map(messageData => {
-        if (messageData.receiverId === ele._id) {
-          return <Text>{messageData.lastMessage}</Text>;
-        }
-      })}
-    </>
-  );
-}
 
 export default memo(UsersUI);
 

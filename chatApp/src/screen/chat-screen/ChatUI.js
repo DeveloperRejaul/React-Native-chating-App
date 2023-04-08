@@ -5,46 +5,45 @@ import {
   FlatList,
   TextInput,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import HeaderCom from '../../component/HeaderCom.js';
 import SmsContent from './SmsContent.js';
 import {rf, rh, rw} from '../../utitils/dimensions.js';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import appInfo from '../../constent/appInfo.js';
 import websocket from '../../socket/socketio.service.js';
 import {useNavigation} from '@react-navigation/native';
 
 export default function ChatUI({route}) {
   const [userData, setUserData] = useState([]);
-  const [receivedSMS, setReceivedSMS] = useState([]);
   const [message, setMessage] = useState('');
 
   const navigation = useNavigation();
-  const dispatch = useDispatch();
 
   const userId = useSelector(state => state.auth.userId);
   const roomId = useSelector(state => state.chat.roomId);
+  const receiver = route.params.receiverId;
 
   // get all message when first time component render
   useEffect(() => {
+    const getAllMessage = () => {
+      fetch(`${appInfo.url}/api/message/${roomId}`)
+        .then(res => res.json())
+        .then(res => {
+          const messages = res.allMessage.messages.reverse();
+          setUserData([...messages]);
+        })
+        .catch(error => console.log(error));
+    };
     getAllMessage();
   }, []);
 
-  const getAllMessage = () => {
-    fetch(`${appInfo.url}/api/message/${roomId}`)
-      .then(res => res.json())
-      .then(res => {
-        const messages = res.allMessage.messages.reverse();
-        setUserData([...messages]);
-      })
-      .catch(error => console.log(error));
-  };
-
   // handle chatting message
-  const handleMessage = () => {
-    fetch(`${appInfo.url}/api/message/`, {
+  const handleMessage = async () => {
+    await websocket.emit('sendMessage', roomId, message);
+
+    await fetch(`${appInfo.url}/api/message/`, {
       method: 'POST',
       headers: {
         'Content-type': 'application/json; charset=UTF-8',
@@ -54,19 +53,15 @@ export default function ChatUI({route}) {
         sender: userId,
         chatRoom: roomId,
       }),
-    }).then(res => console.log(res));
-
+    });
     setUserData([{text: message, sender: userId}, ...userData]);
-    websocket.emit('sendMessage', roomId, message);
-
     setMessage('');
+    await websocket.emit('getLastMessage', userId);
   };
 
   websocket.on('receiveMessage', message => {
     setUserData([{text: message, sender: receiver}, ...userData]);
   });
-
-  console.log(userData);
 
   return (
     <>

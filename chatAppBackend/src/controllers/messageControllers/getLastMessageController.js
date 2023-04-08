@@ -18,20 +18,21 @@ const getLastMessageController = async (req, res) => {
         members: 1,
         messages: 1,
       })
-      .populate("messages", "text -_id");
+      .populate("messages", "createdAt text -_id");
 
     const lastMessagesInfo = await allRooms.map((data) => {
-      const receiverId = data.members[1];
+      const receiverId = data.members.filter((id) => id != userId);
       const lastMessage = data.messages[data.messages.length - 1];
       return {
-        receiverId,
+        receiverId: receiverId[0],
         lastMessage: lastMessage.text,
       };
     });
-    res.send({ lastMessagesInfo });
+    res.send({ allRooms });
   } catch (error) {
     console.log(error.message);
   }
 };
+// id != userId
 
 module.exports = getLastMessageController;

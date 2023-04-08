@@ -1,5 +1,5 @@
 import {StyleSheet, View, Text, Alert} from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import HeaderCom from '../../component/HeaderCom.js';
 import UsersUI from './UsersUI.js';
 import websocket from '../../socket/socketio.service.js';
@@ -13,11 +13,12 @@ import {handleOneByOneChat} from '../../redux/features/chatSlice.js';
 export default function MainScreen() {
   const [userData, setUserData] = useState([]);
   const [roomId, setRoomId] = useState(null);
-  const [latestMessage, setLatestMessage] = useState([]);
+  const [lastMessage, setLastMessage] = useState([]);
 
   const {data, getData, status} = useApi();
   const navigation = useNavigation();
   const dispatch = useDispatch();
+
   const myEmail = useSelector(state => state.auth.email);
   const userId = useSelector(state => state.auth.userId);
 
@@ -28,20 +29,15 @@ export default function MainScreen() {
     websocket.on('send-data-from-server', data => {
       console.log(data);
     });
-    // get all latest message
-    const getAllLatestMessage = async userId => {
-      await fetch(`${appInfo.url}/api/message/lastMessage/${userId}`)
-        .then(res => res.json())
-        .then(res => {
-          setLatestMessage([...res.lastMessagesInfo]);
-        })
-        .catch(error =>
-          console.log('get all latest message: ' + error.message),
-        );
-    };
 
-    getAllLatestMessage(userId);
+    websocket.emit('getLastMessage', userId);
   }, []);
+
+  useEffect(() => {
+    websocket.on('lastMessage', message => {
+      setLastMessage([...message]);
+    });
+  });
 
   useEffect(() => {
     if (status === 200) {
@@ -100,7 +96,7 @@ export default function MainScreen() {
             <UsersUI
               onPress={() => handleChat(ele)}
               key={index}
-              {...{ele, index, latestMessage}}
+              {...{ele, index, lastMessage}}
             />
           );
         })}
