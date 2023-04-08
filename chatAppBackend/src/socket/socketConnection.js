@@ -13,6 +13,10 @@ const socketConnection = (socket, io) => {
     callback("joined");
   });
 
+  socket.on("sendMessage", (roomName, message) => {
+    socket.to(roomName).emit("receiveMessage", message);
+  });
+
   socket.emit("send-data-from-server", "hello client");
 };
 

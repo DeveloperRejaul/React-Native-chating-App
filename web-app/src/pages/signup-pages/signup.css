@@ -1,0 +1,59 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #fff;
+}
+.innerContainer {
+  height: 90%;
+  background-color: #ecf2ff;
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.input {
+  width: 100%;
+  height: 40px;
+  border: 1px solid rgb(0, 0, 0);
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 10px;
+}
+.signupBtn {
+  width: 80%;
+  text-align: center;
+  background-color: #537fe7;
+  height: 35px;
+  border-radius: 10px;
+  color: black;
+  font-weight: 600;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+}
+.labelBody {
+  display: flex;
+  justify-content: space-between;
+  margin-right: 5px;
+  margin-left: 5px;
+}
+.error {
+  color: brown;
+}
+/* media screen */
+@media screen and (min-width: 600px) {
+  .innerContainer {
+    width: 50%;
+  }
+}
+@media screen and (max-width: 600px) {
+  .innerContainer {
+    width: 100%;
+    height: 100%;
+    padding-top: 40px;
+  }
+}

@@ -1,0 +1,3 @@
+getMessageController : {{GET}}: http://localhost:3000/api/message/lastMessage/:roomId
+getLastMessageController|get|: http://localhost:3000/api/message/lastMessage/:userId
+createChatRoomController|POST|: http://localhost:3000/api/chat

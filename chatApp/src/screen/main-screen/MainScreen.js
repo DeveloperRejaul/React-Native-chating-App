@@ -1,24 +1,23 @@
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, Alert} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import HeaderCom from '../../component/HeaderCom.js';
-import UsersUI from './component/UsersUI.js';
+import UsersUI from './UsersUI.js';
 import websocket from '../../socket/socketio.service.js';
 import useApi from '../../api/useApi.js';
 import appInfo from '../../constent/appInfo.js';
 import {useSelector, useDispatch} from 'react-redux';
 import {logOut} from '../../redux/features/AuthSlice.js';
-import {Alert} from 'native-base';
-import {handleOneByOneChat} from '../../redux/features/oneByOneChatSlice.js';
+import {useNavigation} from '@react-navigation/native';
+import {handleOneByOneChat} from '../../redux/features/chatSlice.js';
 
-export default function ChatScreen({navigation}) {
-  const [userData, setuserData] = useState([]);
-  const [roomId, setRoomId] = useState('');
-  const {data, getData, status, postData} = useApi();
+export default function MainScreen() {
+  const [userData, setUserData] = useState([]);
+  const [roomId, setRoomId] = useState(null);
+  const {data, getData, status} = useApi();
+  const navigation = useNavigation();
   const dispatch = useDispatch();
   const myEmail = useSelector(state => state.auth.email);
-  const myId = useSelector(state => state.auth.userId);
-  // const lestMessage = useSelector(state => state.oneByOneChat.lestMessage);
-  // // console.log(lestMessage);
+  const userId = useSelector(state => state.auth.userId);
 
   useEffect(() => {
     getData(appInfo.getAlluserUrl);
@@ -29,28 +28,30 @@ export default function ChatScreen({navigation}) {
     });
   }, []);
 
-  const handleUserData = () => {
-    const newUser = data.users.filter(data => data.email != myEmail);
-    setuserData([...newUser]);
-  };
-
   useEffect(() => {
     if (status === 200) {
       handleUserData();
     }
   }, [data]);
 
-  const handleChat = async ele => {
+  // get all user
+  const handleUserData = () => {
+    const newUser = data.users.filter(data => data.email != myEmail);
+    setUserData([...newUser]);
+  };
+
+  // handle creating chat rooms
+  const handleChat = ele => {
     const receiverId = ele._id;
 
     // create one by one Room
-    await fetch(`${appInfo.url}/api/chat`, {
+    fetch(`${appInfo.url}/api/chat/`, {
       method: 'POST',
       headers: {
         'Content-type': 'application/json; charset=UTF-8',
       },
       body: JSON.stringify({
-        userId: myId,
+        userId: userId,
         otherUserId: receiverId,
       }),
     })
@@ -64,12 +65,15 @@ export default function ChatScreen({navigation}) {
       .then(res => {
         setRoomId(res._id);
         dispatch(handleOneByOneChat({userInfo: ele, roomId: res._id}));
+      })
+      .then(() => {
+        navigation.navigate('ChatUI', {
+          receiverId: receiverId,
+        });
+        websocket.emit('joinRoom', roomId, res => {
+          console.log(res);
+        });
       });
-
-    websocket.emit('joinRoom', roomId, res => {
-      console.log(res);
-    });
-    navigation.navigate('ChatUI', {receiverId: ele._id});
   };
 
   return (

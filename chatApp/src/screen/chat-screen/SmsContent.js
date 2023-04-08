@@ -1,6 +1,6 @@
 import {StyleSheet, Text} from 'react-native';
 import React, {memo} from 'react';
-import {rf, rh, rw} from '../../../utitils/dimensions.js';
+import {rf, rh, rw} from '../../utitils/dimensions.js';
 
 const SmsContent = ({item, index, userId}) => {
   return (

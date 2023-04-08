@@ -1,0 +1,45 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(255, 255, 255);
+  height: 100vh;
+}
+.innerContainer {
+  background-color: #ecf2ff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border-radius: 20px;
+}
+.btn {
+  height: 30px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  background-color: #62cdff;
+  border: 0;
+  color: #000;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 20px;
+}
+
+@media screen and (min-width: 600px) {
+  .innerContainer {
+    width: 50%;
+    height: 80%;
+  }
+  .btn {
+    width: 50%;
+  }
+}
+@media screen and (max-width: 600px) {
+  .innerContainer {
+    width: 80%;
+    height: 90%;
+  }
+  .btn {
+    width: 70%;
+  }
+}

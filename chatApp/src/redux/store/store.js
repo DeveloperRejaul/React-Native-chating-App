@@ -1,15 +1,18 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {combineReducers, configureStore} from '@reduxjs/toolkit';
+import {
+  combineReducers,
+  configureStore,
+  createImmutableStateInvariantMiddleware,
+} from '@reduxjs/toolkit';
 import {persistReducer} from 'redux-persist';
-import thunk from 'redux-thunk';
 import AuthReducer from '../features/AuthSlice.js';
 import SplassReducer from '../features/SplassSlice.js';
-import oneByOneChatReducer from '../features/oneByOneChatSlice';
+import chatReducer from '../features/chatSlice.js';
 
 const reducer = combineReducers({
   auth: AuthReducer,
   splass: SplassReducer,
-  oneByOneChat: oneByOneChatReducer,
+  chat: chatReducer,
 });
 
 const persistConfig = {
@@ -20,8 +23,13 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, reducer);
 
+// Middleware setup
+const immutableInvariantMiddleware = createImmutableStateInvariantMiddleware({
+  ignoredPaths: ['ignoredPath', 'ignoredNested.one', 'ignoredNested.two'],
+});
+
 export const store = configureStore({
   reducer: persistedReducer,
   devTools: process.env.NODE_ENV !== 'production',
-  middleware: [thunk],
+  middleware: [],
 });

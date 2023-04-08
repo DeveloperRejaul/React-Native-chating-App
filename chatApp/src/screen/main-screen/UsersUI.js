@@ -1,7 +1,7 @@
 import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React, {memo} from 'react';
-import {rf, rh, rw} from '../../../utitils/dimensions.js';
-import imagePhat from '../../../constent/imagePhat.js';
+import {rf, rh, rw} from '../../utitils/dimensions.js';
+import imagePhat from '../../constent/imagePhat.js';
 
 const UsersUI = ({ele, index, onPress}) => {
   return (

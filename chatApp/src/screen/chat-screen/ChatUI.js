@@ -8,44 +8,43 @@ import {
   Alert,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
-import HeaderCom from '../../../component/HeaderCom.js';
+import HeaderCom from '../../component/HeaderCom.js';
 import SmsContent from './SmsContent.js';
-import {rf, rh, rw} from '../../../utitils/dimensions.js';
+import {rf, rh, rw} from '../../utitils/dimensions.js';
 import {useDispatch, useSelector} from 'react-redux';
-import appInfo from '../../../constent/appInfo.js';
-import {handleLastMessage} from '../../../redux/features/oneByOneChatSlice.js';
+import appInfo from '../../constent/appInfo.js';
+import websocket from '../../socket/socketio.service.js';
+import {useNavigation} from '@react-navigation/native';
 
-export default function ChatUI({navigation, route}) {
+export default function ChatUI({route}) {
   const [userData, setUserData] = useState([]);
+  const [receivedSMS, setReceivedSMS] = useState([]);
   const [message, setMessage] = useState('');
-  const userId = useSelector(state => state.auth.userId);
-  const roomId = useSelector(state => state.oneByOneChat.roomId);
+
+  const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  // console.log(route.params.receiverId);
+  const userId = useSelector(state => state.auth.userId);
+  const roomId = useSelector(state => state.chat.roomId);
 
   // get all message when first time component render
   useEffect(() => {
     getAllMessage();
   }, []);
-  const getAllMessage = async () => {
-    await fetch(`${appInfo.url}/api/message/${roomId}`)
+
+  const getAllMessage = () => {
+    fetch(`${appInfo.url}/api/message/${roomId}`)
+      .then(res => res.json())
       .then(res => {
-        if (!res.ok) {
-          Alert.alert('message not fetch');
-        } else {
-          return res.json();
-        }
+        const messages = res.allMessage.messages.reverse();
+        setUserData([...messages]);
       })
-      .then(res => {
-        const newMessage = res.allMessage.messages.reverse();
-        setUserData([...newMessage]);
-      });
+      .catch(error => console.log(error));
   };
 
   // handle chatting message
-  const handleMessage = async () => {
-    await fetch(`${appInfo.url}/api/message`, {
+  const handleMessage = () => {
+    fetch(`${appInfo.url}/api/message/`, {
       method: 'POST',
       headers: {
         'Content-type': 'application/json; charset=UTF-8',
@@ -55,33 +54,19 @@ export default function ChatUI({navigation, route}) {
         sender: userId,
         chatRoom: roomId,
       }),
-    }).then(res => {});
+    }).then(res => console.log(res));
 
     setUserData([{text: message, sender: userId}, ...userData]);
+    websocket.emit('sendMessage', roomId, message);
+
     setMessage('');
   };
 
-  // handle last message
-  useEffect(() => {
-    return () => {
-      const lastElement = userData.splice(0, 1)[0];
+  websocket.on('receiveMessage', message => {
+    setUserData([{text: message, sender: receiver}, ...userData]);
+  });
 
-      if (lastElement != undefined) {
-        console.log(lastElement);
-
-        dispatch(
-          handleLastMessage({
-            roomId: '',
-          }),
-        );
-      }
-    };
-  }, [userData]);
-
-  // roomId: '',
-  //   reserverId: '',
-  //   time: '',
-  //   message: '',
+  console.log(userData);
 
   return (
     <>
