@@ -13,6 +13,8 @@ import {handleOneByOneChat} from '../../redux/features/chatSlice.js';
 export default function MainScreen() {
   const [userData, setUserData] = useState([]);
   const [roomId, setRoomId] = useState(null);
+  const [latestMessage, setLatestMessage] = useState([]);
+
   const {data, getData, status} = useApi();
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -26,6 +28,19 @@ export default function MainScreen() {
     websocket.on('send-data-from-server', data => {
       console.log(data);
     });
+    // get all latest message
+    const getAllLatestMessage = async userId => {
+      await fetch(`${appInfo.url}/api/message/lastMessage/${userId}`)
+        .then(res => res.json())
+        .then(res => {
+          setLatestMessage([...res.lastMessagesInfo]);
+        })
+        .catch(error =>
+          console.log('get all latest message: ' + error.message),
+        );
+    };
+
+    getAllLatestMessage(userId);
   }, []);
 
   useEffect(() => {
@@ -85,7 +100,7 @@ export default function MainScreen() {
             <UsersUI
               onPress={() => handleChat(ele)}
               key={index}
-              {...{ele, index}}
+              {...{ele, index, latestMessage}}
             />
           );
         })}
