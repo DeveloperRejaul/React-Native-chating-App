@@ -24,7 +24,7 @@ const MessageSchema = new mongoose.Schema({
     ref: "Room",
     required: true,
   },
-  createdAt: { type: Date, default: Date.now() },
+  createdAt: { type: Date, default: new Date() },
 });
 
 exports.User = mongoose.model("User", UserSchema);

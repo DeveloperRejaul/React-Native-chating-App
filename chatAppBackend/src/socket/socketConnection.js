@@ -35,7 +35,7 @@ const getData = async (userId) => {
     })
     .populate("messages", "text createdAt -_id");
 
-  const lastMessages = await allRooms.map((data) => {
+  const lastMessages = allRooms.map((data) => {
     const receiverId = data.members.filter((id) => id != userId);
     const lastMessage = data.messages[data.messages.length - 1];
     return {

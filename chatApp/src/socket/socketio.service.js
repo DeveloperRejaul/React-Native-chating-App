@@ -33,6 +33,9 @@ class Websocket {
   on(event, cb) {
     this.socket.on(event, cb);
   }
+  off(eventName, cb) {
+    this.socket.off(eventName, cb);
+  }
 }
 
 const websocket = new Websocket();

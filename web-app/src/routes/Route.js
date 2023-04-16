@@ -9,7 +9,7 @@ import ChatPage from "../pages/chat-pages/Index";
 import Protected from "./Protected";
 
 function Navigation() {
-  const isLogin = false;
+  const isLogin = true;
 
   return (
     <BrowserRouter>

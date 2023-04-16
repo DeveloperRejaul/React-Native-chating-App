@@ -1,66 +1,57 @@
 import React from "react";
-import { Formik } from "formik";
-import * as yup from "yup";
-
-const formValidation = yup.object().shape({
-  apples: yup.number().required().positive().integer(),
-  name: yup.string().required().min(2),
-});
+import "../../app.css";
+import Button from "../../components/button/Button";
+import { useFormik } from "formik";
+import { Validation } from "./validation";
 
 function LoginPage() {
-  return (
-    <Formik
-      initialValues={{
-        apples: 0,
-        name: "",
-      }}
-      validationSchema={formValidation}
-      onSubmit={(values) => {
-        // TODO: buy apples
-      }}
-    >
-      {({
-        handleChange,
-        handleBlur,
-        values,
-        handleSubmit,
-        errors,
-        touched,
-      }) => (
-        <form onSubmit={handleSubmit}>
-          {errors.apples && touched.apples && (
-            <p style={{ color: "red" }}> {errors.apples} </p>
-          )}
-          <label htmlFor="apples">
-            <span>Apples:</span>
-            <input
-              name="apples"
-              type="number"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={values.apples}
-              required
-            />
-          </label>
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    onSubmit: (values) => {
+      alert("Submit Data");
+    },
+    validationSchema: Validation.formValidation,
+  });
 
-          {errors.name && touched.name && (
-            <p style={{ color: "red" }}> {errors.name} </p>
-          )}
-          <label htmlFor="name">
-            <span>Name:</span>
+  return (
+    <div className="container">
+      <div className="inner-container">
+        <h1 className="login-title">Login to your account</h1>
+        <form onSubmit={formik.handleSubmit}>
+          <div className="input-body">
+            <label className="input-label" htmlFor="email">
+              Email * {Validation.emailError(formik)}
+            </label>
+
             <input
-              name="name"
-              type="text"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={values.name}
-              required
+              type="email"
+              name="email"
+              id="email"
+              className="input"
+              onChange={formik.handleChange}
             />
-          </label>
-          <button type="submit">Buy apples</button>
+          </div>
+
+          <div className="input-body">
+            <label className="input-label" htmlFor="password">
+              Password * {Validation.passwordError(formik)}
+            </label>
+
+            <input
+              type="password"
+              name="password"
+              id="password"
+              className="input"
+              onChange={formik.handleChange}
+            />
+          </div>
+          <Button text="Login" type="submit" style={{ width: "80%" }} />
         </form>
-      )}
-    </Formik>
+      </div>
+    </div>
   );
 }
 export default LoginPage;

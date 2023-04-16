@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import "./signup.css";
+import "../../app.css";
 import { Formik } from "formik";
-
 import { formValidation } from "./formValidation";
+import Button from "../../components/button/Button";
 
 function SignupPage() {
   const [file, setFile] = useState("");
@@ -24,7 +24,7 @@ function SignupPage() {
         >
           {({ handleChange, values, handleSubmit, errors, touched }) => (
             <form onSubmit={handleSubmit}>
-              <div style={{ paddingBottom: 10 }}>
+              <div className="signup-input-body">
                 <div className="labelBody">
                   <label className="label" htmlFor="userName">
                     User name *
@@ -44,7 +44,7 @@ function SignupPage() {
                 />
               </div>
               {/* Email field */}
-              <div style={{ paddingBottom: 10 }}>
+              <div className="signup-input-body">
                 <div className="labelBody">
                   <label className="label" htmlFor="email">
                     Email *
@@ -64,7 +64,7 @@ function SignupPage() {
                 />
               </div>
               {/* Password field  */}
-              <div style={{ paddingBottom: 10 }}>
+              <div className="signup-input-body">
                 <div className="labelBody">
                   <label className="label" htmlFor="password">
                     Password *
@@ -85,7 +85,7 @@ function SignupPage() {
 
               {/* confirm password field  */}
 
-              <div style={{ paddingBottom: 10 }}>
+              <div className="signup-input-body">
                 <div className="labelBody">
                   <label className="label" htmlFor="confirmPassword">
                     Confirm password *
@@ -105,7 +105,7 @@ function SignupPage() {
               </div>
 
               {/* file field */}
-              <div style={{ paddingBottom: 10 }}>
+              <div className="signup-input-body">
                 <input
                   type="file"
                   name="file"
@@ -114,10 +114,7 @@ function SignupPage() {
               </div>
 
               {/* <img src={""} alt="" /> */}
-
-              <button className="signupBtn" type="submit">
-                Sign up
-              </button>
+              <Button text="Sign Up" type="submit" />
             </form>
           )}
         </Formik>

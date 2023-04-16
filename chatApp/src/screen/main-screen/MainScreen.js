@@ -29,14 +29,21 @@ export default function MainScreen() {
     websocket.on('send-data-from-server', data => {
       console.log(data);
     });
-
     websocket.emit('getLastMessage', userId);
+
+    return () => {
+      websocket.off('send-data-from-server');
+    };
   }, []);
 
   useEffect(() => {
     websocket.on('lastMessage', message => {
       setLastMessage([...message]);
     });
+
+    return () => {
+      websocket.off('lastMessage');
+    };
   });
 
   useEffect(() => {

@@ -1,0 +1,13 @@
+.btn {
+  width: 100%;
+  text-align: center;
+  background-color: #537fe7;
+  height: 35px;
+  border-radius: 10px;
+  color: black;
+  font-weight: 600;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+}

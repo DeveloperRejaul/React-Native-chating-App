@@ -2,8 +2,11 @@ import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React, {memo} from 'react';
 import {rf, rh, rw} from '../../utitils/dimensions.js';
 import imagePhat from '../../constent/imagePhat.js';
+import {timeSince} from '../../utitils/timeDeference.js';
 
 const UsersUI = ({ele, index, onPress, lastMessage}) => {
+  timeSince();
+
   return (
     <TouchableOpacity onPress={onPress} key={index} style={styles.userBody}>
       <View style={styles.imageBody}>
@@ -15,9 +18,12 @@ const UsersUI = ({ele, index, onPress, lastMessage}) => {
       </View>
       <Text style={styles.userName}>{ele.name}</Text>
       {lastMessage?.map((message, i) => (
-        <Text>
-          {message.receiverId === ele._id && message.lastMessage?.text}
-        </Text>
+        <>
+          <Text>
+            {message.receiverId === ele._id && message.lastMessage?.text}
+          </Text>
+          <Text>time</Text>
+        </>
       ))}
     </TouchableOpacity>
   );

@@ -1,18 +1,23 @@
 import React from "react";
-import styles from "./styles.module.css";
+import "../../app.css";
 import { useNavigate } from "react-router-dom";
+import Button from "../../components/button/Button";
 export default function HomePage() {
   const navigate = useNavigate();
 
   return (
-    <div className={styles.container}>
-      <div className={styles.innerContainer}>
-        <button className={styles.btn} onClick={() => navigate("/auth/login")}>
-          Login
-        </button>
-        <button className={styles.btn} onClick={() => navigate("/auth/signup")}>
-          Sign up
-        </button>
+    <div className="container">
+      <div className="innerContainer">
+        <Button
+          text="Login"
+          style={{ backgroundColor: "#62cdff", width: "60%" }}
+          onClick={() => navigate("/auth/login")}
+        />
+        <Button
+          text="Sign Up"
+          style={{ backgroundColor: "#62cdff", width: "60%" }}
+          onClick={() => navigate("/auth/signup")}
+        />
       </div>
     </div>
   );
