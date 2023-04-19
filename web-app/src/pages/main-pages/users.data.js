@@ -1,0 +1,18 @@
+export default [
+  { id: "1", name: "Rejaul", messages: ["hi", "hello"], isOnline: true },
+  { id: "2", name: "Kamal", messages: ["hi", "hello"], isOnline: false },
+  { id: "3", name: "Jamal", messages: ["hi", "hello"], isOnline: true },
+  { id: "3", name: "Jamal", messages: ["hi", "hello"], isOnline: true },
+  { id: "3", name: "Jamal", messages: ["hi", "hello"], isOnline: true },
+  { id: "3", name: "Jamal", messages: ["hi", "hello"], isOnline: true },
+  { id: "3", name: "Jamal", messages: ["hi", "hello"], isOnline: true },
+  { id: "3", name: "Jamal", messages: ["hi", "hello"], isOnline: true },
+  { id: "3", name: "Jamal", messages: ["hi", "hello"], isOnline: true },
+  { id: "3", name: "Jamal", messages: ["hi", "hello"], isOnline: true },
+  { id: "3", name: "Jamal", messages: ["hi", "hello"], isOnline: true },
+  { id: "3", name: "Jamal", messages: ["hi", "hello"], isOnline: true },
+  { id: "3", name: "Jamal", messages: ["hi", "hello"], isOnline: true },
+  { id: "3", name: "Jamal", messages: ["hi", "hello"], isOnline: true },
+  { id: "3", name: "Jamal", messages: ["hi", "hello"], isOnline: true },
+  { id: "3", name: "Jamal", messages: ["hi", "hello"], isOnline: true },
+];

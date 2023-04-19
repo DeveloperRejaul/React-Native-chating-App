@@ -3,8 +3,13 @@ import "../../app.css";
 import Button from "../../components/button/Button";
 import { useFormik } from "formik";
 import { Validation } from "./validation";
+import { Text } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
+import NAV_PHAT from "../../constants/NAV_PHAT";
 
 function LoginPage() {
+  const navigate = useNavigate();
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -19,7 +24,14 @@ function LoginPage() {
   return (
     <div className="container">
       <div className="inner-container">
-        <h1 className="login-title">Login to your account</h1>
+        <Text
+          fontSize={[25, 30, 35]}
+          fontWeight={[600]}
+          marginBottom={[10]}
+          color={["black"]}
+        >
+          Login to your account
+        </Text>
         <form onSubmit={formik.handleSubmit}>
           <div className="input-body">
             <label className="input-label" htmlFor="email">
@@ -48,7 +60,12 @@ function LoginPage() {
               onChange={formik.handleChange}
             />
           </div>
-          <Button text="Login" type="submit" style={{ width: "80%" }} />
+          <Button
+            text="Login"
+            type="submit"
+            style={{ width: "80%" }}
+            onClick={() => navigate(NAV_PHAT.MAIN)}
+          />
         </form>
       </div>
     </div>
