@@ -1,7 +1,7 @@
 import React from "react";
 import { headerHeight } from "../../pages/main-pages/constences";
 
-const Avatar = ({ image, isOnline, size = 1 }) => {
+const Avatar = ({ image, isOnline, size = 0 }) => {
   const styles = {
     profile: {
       position: "relative",

@@ -1,31 +1,56 @@
 import {
+  Box,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
   DrawerContent,
   DrawerHeader,
   DrawerOverlay,
+  Text,
 } from "@chakra-ui/react";
+import Avatar from "../Avatar/Avatar";
 
-export default function DrawerCom({ onClose, isOpen, size }) {
-  //   const sizes = ["xs", "sm", "md", "lg", "xl", "full"];
-
+export default function DrawerCom({ onClose, isOpen, size, userData }) {
   return (
     <Drawer onClose={onClose} isOpen={isOpen} size={size}>
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton color={"#537fe7"} />
-        <DrawerHeader>{` drawer contents`}</DrawerHeader>
-        <DrawerBody>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            Consequat nisl vel pretium lectus quam id. Semper quis lectus nulla
-            at volutpat diam ut venenatis. Dolor morbi non arcu risus quis
-            varius quam quisque. Massa ultricies mi quis hendrerit dolor magna
-            eget est lorem. Erat imperdiet sed euismod nisi porta. Lectus
-            vestibulum mattis ullamcorper velit.
-          </p>
+        <DrawerBody mt={["20%"]}>
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <Avatar image={userData.profileImage} size={25} />
+            <Text
+              fontSize={"md"}
+              fontWeight={"medium"}
+              color={"blackAlpha.800"}
+            >
+              {userData.name}
+            </Text>
+            <Text
+              fontSize={"sm"}
+              fontWeight={"normal"}
+              color={"blackAlpha.700"}
+            >
+              {userData.profusion}
+            </Text>
+          </Box>
+          <Box mt={"5%"}>
+            <Text
+              fontSize={"md"}
+              fontWeight={"medium"}
+              color={"blackAlpha.600"}
+            >
+              About
+            </Text>
+            <Text fontSize={"md"} fontWeight={"sm"} color={"blackAlpha.800"}>
+              {userData.about}
+            </Text>
+          </Box>
         </DrawerBody>
       </DrawerContent>
     </Drawer>
