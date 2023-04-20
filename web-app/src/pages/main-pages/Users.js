@@ -46,7 +46,7 @@ function Users({ handleChat, display, slider, lastMessage, setChatMessage }) {
       <div style={styles.chatBody} className="chat-body">
         {userData.map((ele) => (
           <div
-            key={ele.id}
+            key={ele?.id}
             style={styles.userItem}
             onClick={() => handleClick(ele)}
           >
@@ -67,7 +67,7 @@ function Users({ handleChat, display, slider, lastMessage, setChatMessage }) {
                   fontSize={["sm"]}
                   fontWeight={["normal"]}
                 >
-                  {lastMessage.id === ele.id && lastMessage.message.message}
+                  {lastMessage?.id === ele?.id && lastMessage.message.message}
                 </Text>
                 <Text
                   marginLeft={["2"]}
@@ -75,7 +75,7 @@ function Users({ handleChat, display, slider, lastMessage, setChatMessage }) {
                   fontSize={["sm"]}
                   fontWeight={["normal"]}
                 >
-                  {lastMessage.id === ele.id &&
+                  {lastMessage?.id === ele?.id &&
                     Time.MsToClock(lastMessage.message.time)}
                 </Text>
               </Flex>
