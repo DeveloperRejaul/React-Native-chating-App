@@ -1,14 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "../../app.css";
 import Button from "../../components/button/Button";
 import { useFormik } from "formik";
 import { Validation } from "./validation";
 import { Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { NAV_PHAT } from "../../constants/NAV_PHAT";
+import { useLoginUserMutation } from "../../redux/services/chatApi";
+import { useDispatch, useSelector } from "react-redux";
+import { handleLogin } from "../../redux/features/authSlice";
 
 function LoginPage() {
   const navigate = useNavigate();
+  const [loginUser, response] = useLoginUserMutation();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (response.isSuccess) {
+      dispatch(handleLogin({ type: "login", payload: response.data.token }));
+      navigate("/main");
+    }
+  }, [response]);
 
   const formik = useFormik({
     initialValues: {
@@ -16,7 +27,10 @@ function LoginPage() {
       password: "",
     },
     onSubmit: (values) => {
-      alert("Submit Data");
+      loginUser({
+        email: values.email,
+        password: values.password,
+      });
     },
     validationSchema: Validation.formValidation,
   });
@@ -60,12 +74,7 @@ function LoginPage() {
               onChange={formik.handleChange}
             />
           </div>
-          <Button
-            text="Login"
-            type="submit"
-            style={{ width: "80%" }}
-            onClick={() => navigate(NAV_PHAT.MAIN)}
-          />
+          <Button text="Login" type="submit" style={{ width: "80%" }} />
         </form>
       </div>
     </div>

@@ -7,8 +7,11 @@ import ErrorPage from "../pages/error-pages/Index";
 import MainPage from "../pages/main-pages/Index";
 import Protected from "./Protected";
 import { NAV_PHAT } from "../constants/NAV_PHAT";
+import { useSelector } from "react-redux";
 
 function Navigation() {
+  const Login = useSelector((state) => state.auth);
+
   const isLogin = true;
 
   return (

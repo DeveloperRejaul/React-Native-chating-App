@@ -9,9 +9,9 @@ import { headerHeight } from "./constences";
 import { IoEllipsisVertical } from "react-icons/io5";
 import { useState } from "react";
 
-function Chat({ chatUser = {}, chatMessage, setChatMessage }) {
+function Chat({ chatUser = {}, chatMessage = [{}], setChatMessage }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [inputValue, setInputValue] = useState(null);
+  const [inputValue, setInputValue] = useState("");
 
   const handelSendMessage = () => {
     inputValue !== "" &&
@@ -42,7 +42,7 @@ function Chat({ chatUser = {}, chatMessage, setChatMessage }) {
         justifyContent={["space-between"]}
       >
         <Box cursor={"pointer"} display={["flex"]} onClick={() => onOpen()}>
-          <Avatar image={chatUser.profileImage} />
+          <Avatar image={chatUser.profilePicture} />
           <Box ml={["2"]}>
             <Text
               fontSize={["md"]}
@@ -56,7 +56,7 @@ function Chat({ chatUser = {}, chatMessage, setChatMessage }) {
               fontWeight={["medium"]}
               color={["blackAlpha.500"]}
             >
-              {chatUser.profusion}
+              {"chatUser.profusion"}
             </Text>
           </Box>
         </Box>
@@ -101,10 +101,10 @@ function Chat({ chatUser = {}, chatMessage, setChatMessage }) {
         overflowY="scroll"
       >
         {chatMessage
-          ?.map((element) => {
+          ?.map((element, index) => {
             return (
-              <Box className={element.type}>
-                <Text className="message">{element.message}</Text>
+              <Box className={element?.type} key={index}>
+                <Text className="message">{element?.message}</Text>
               </Box>
             );
           })

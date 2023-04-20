@@ -1,10 +1,18 @@
 import Navigation from "./routes/Route";
 import { ChakraProvider } from "@chakra-ui/react";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { chatStore, persisStore } from "./redux/app/store";
+
 function App() {
   return (
-    <ChakraProvider>
-      <Navigation />
-    </ChakraProvider>
+    <Provider store={chatStore}>
+      <PersistGate loading={null} persistor={persisStore}>
+        <ChakraProvider>
+          <Navigation />
+        </ChakraProvider>
+      </PersistGate>
+    </Provider>
   );
 }
 

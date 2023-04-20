@@ -1,7 +1,6 @@
 import React, { useState, useRef, useCallback } from "react";
 import "../../app.css";
-import { Box, Text, useDimensions, useDisclosure } from "@chakra-ui/react";
-import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
+import { Box, useDimensions } from "@chakra-ui/react";
 
 import SliderCom from "../../components/Slider/Slider";
 import Users from "./Users";
