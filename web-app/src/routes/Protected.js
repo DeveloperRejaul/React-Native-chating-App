@@ -1,6 +1,6 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import NAV_PHAT from "../constants/NAV_PHAT";
+import { NAV_PHAT } from "../constants/NAV_PHAT";
 
 function Protected({ isLogin, children }) {
   if (!isLogin) {

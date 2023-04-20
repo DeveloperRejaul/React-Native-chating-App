@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import { Validation } from "./validation";
 import { Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import NAV_PHAT from "../../constants/NAV_PHAT";
+import { NAV_PHAT } from "../../constants/NAV_PHAT";
 
 function LoginPage() {
   const navigate = useNavigate();

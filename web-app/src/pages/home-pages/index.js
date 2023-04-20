@@ -2,8 +2,7 @@ import React from "react";
 import "../../app.css";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/button/Button";
-import { Box, Text } from "@chakra-ui/react";
-import NAV_PHAT from "../../constants/NAV_PHAT";
+import { NAV_PHAT } from "../../constants/NAV_PHAT";
 
 export default function HomePage() {
   const navigate = useNavigate();

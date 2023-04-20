@@ -1,30 +1,24 @@
 import React, { useState, useRef, useCallback } from "react";
 import "../../app.css";
-import Avatar from "../../components/Avatar/Avatar";
-import {
-  Box,
-  Stack,
-  Text,
-  useDimensions,
-  useDisclosure,
-} from "@chakra-ui/react";
-import {
-  IoChatbubbleEllipsesOutline,
-  IoEllipsisVertical,
-} from "react-icons/io5";
-import { BiSearch } from "react-icons/bi";
-import { headerHeight } from "./constences";
-import DrawerCom from "../../components/Drawer/Drawer";
+import { Box, Text, useDimensions, useDisclosure } from "@chakra-ui/react";
+import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
+
 import SliderCom from "../../components/Slider/Slider";
 import Users from "./Users";
+import Chat from "./Chat";
+import DefaultChat from "./DefaultChat";
 
 function MainPage() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const elementRef = useRef();
   const slider = useRef();
 
   const [isChat, setIsChat] = useState(false);
   const [chatUser, setChatUser] = useState({});
+  const [chatMessage, setChatMessage] = useState([
+    { type: "messageRight", message: "hello", time: Date.now() },
+    { type: "messageLeft", message: "hello", time: Date.now() },
+  ]);
+
   const dimensions = useDimensions(elementRef, true);
   const displayCondition = isChat && dimensions?.contentBox.width < 765;
 
@@ -40,7 +34,15 @@ function MainPage() {
   return (
     <div style={styles.container} ref={elementRef}>
       {/* All user Part */}
-      <Users handleChat={handleChat} display={displayCondition && "none"} />
+      <Users
+        handleChat={handleChat}
+        display={displayCondition && "none"}
+        lastMessage={{
+          message: chatMessage[chatMessage?.length - 1],
+          id: chatUser?.id,
+        }}
+        setChatMessage={setChatMessage}
+      />
 
       {/* message part */}
       <Box
@@ -53,102 +55,14 @@ function MainPage() {
       >
         {isChat ? (
           // Chat UI
-          <Box width={"100"}>
-            {/* Chat Header  */}
-            <Box
-              width={"100"}
-              bg={"white"}
-              height={headerHeight}
-              display={["flex"]}
-              alignItems={"center"}
-              paddingX={"5"}
-              borderBottom={"1px solid #ddd "}
-              justifyContent={["space-between"]}
-            >
-              <Box
-                cursor={"pointer"}
-                display={["flex"]}
-                onClick={() => onOpen()}
-              >
-                <Avatar image={chatUser.profileImage} />
-                <Box ml={["2"]}>
-                  <Text
-                    fontSize={["md"]}
-                    fontWeight={["medium"]}
-                    color={["blackAlpha.600"]}
-                  >
-                    {chatUser.name}
-                  </Text>
-                  <Text
-                    fontSize={["sm"]}
-                    fontWeight={["medium"]}
-                    color={["blackAlpha.500"]}
-                  >
-                    {chatUser.profusion}
-                  </Text>
-                </Box>
-              </Box>
-              <Box display={"flex"}>
-                <Box
-                  ml={"3"}
-                  padding={"1"}
-                  borderRadius={"full"}
-                  _hover={{ bg: "blackAlpha.300" }}
-                  cursor={"pointer"}
-                  transition={"ease-in-out .2s"}
-                >
-                  <BiSearch size={23} color={"black"} />
-                </Box>
-                <Box
-                  _hover={{ bg: "blackAlpha.300" }}
-                  cursor={"pointer"}
-                  ml={"3"}
-                  padding={"1"}
-                  borderRadius={"full"}
-                  transition={"ease-in-out .2s"}
-                >
-                  <IoEllipsisVertical size={23} color={"black"} />
-                </Box>
-              </Box>
-              {/* Drawer  */}
-              <DrawerCom
-                isOpen={isOpen}
-                onClose={onClose}
-                size={"xs"}
-                userData={chatUser}
-              />
-            </Box>
-
-            {/* Chat Body  */}
-
-            {/* Chat Footer */}
-          </Box>
+          <Chat
+            chatUser={chatUser}
+            chatMessage={chatMessage}
+            setChatMessage={setChatMessage}
+          />
         ) : (
           // Is Not Chat UI
-          <Box style={styles.notChat}>
-            <Box
-              padding={["4"]}
-              border={"1px solid #ddd"}
-              borderRadius={"full"}
-              bg={["white"]}
-              boxShadow={"md"}
-              mb={["2"]}
-            >
-              <IoChatbubbleEllipsesOutline size={[50]} color={"#537fe7"} />
-            </Box>
-            <Text
-              fontSize={["md"]}
-              fontWeight={["medium"]}
-              color={"black"}
-              bg={"white"}
-              paddingY={["1"]}
-              paddingX={["3"]}
-              borderRadius={["full"]}
-              boxShadow={"md"}
-            >
-              Create Conversation
-            </Text>
-          </Box>
+          <DefaultChat />
         )}
       </Box>
 
@@ -169,14 +83,5 @@ const styles = {
     flex: 1,
     backgroundColor: "#ffffff",
     height: "100vh",
-  },
-
-  notChat: {
-    display: "flex",
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100vh",
-    flexDirection: "column",
   },
 };

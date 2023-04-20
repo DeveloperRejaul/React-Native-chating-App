@@ -1,16 +1,21 @@
-import { Box, Stack, Text } from "@chakra-ui/react";
+import { Box, Flex, Stack, Text } from "@chakra-ui/react";
 import React from "react";
 import Avatar from "../../components/Avatar/Avatar";
 import { IoSearch } from "react-icons/io5";
-import usersData from "./users.data";
+import { userData } from "./users.data";
 import { headerHeight } from "./constences";
 import Profile from "../../assets/images/profile1.jpg";
 import "../../app.css";
+import { Time } from "../../utilits/timeConvater";
 
-function Users({ handleChat, display, slider }) {
+function Users({ handleChat, display, slider, lastMessage, setChatMessage }) {
   const handleClick = (data) => {
     handleChat(data);
-    if (slider != undefined) {
+    setChatMessage([
+      { type: "messageRight", message: "hello", time: Date.now() },
+      { type: "messageLeft", message: "hello", time: Date.now() },
+    ]);
+    if (slider !== undefined) {
       slider.current();
     }
   };
@@ -39,7 +44,7 @@ function Users({ handleChat, display, slider }) {
       </div>
       {/* chat Body */}
       <div style={styles.chatBody} className="chat-body">
-        {usersData.map((ele) => (
+        {userData.map((ele) => (
           <div
             key={ele.id}
             style={styles.userItem}
@@ -55,14 +60,25 @@ function Users({ handleChat, display, slider }) {
               >
                 {ele.name}
               </Text>
-              <Text
-                marginLeft={["2"]}
-                color={"black"}
-                fontSize={["sm"]}
-                fontWeight={["normal"]}
-              >
-                {ele.messages[ele.messages.length - 1]}
-              </Text>
+              <Flex>
+                <Text
+                  marginLeft={["2"]}
+                  color={"black"}
+                  fontSize={["sm"]}
+                  fontWeight={["normal"]}
+                >
+                  {lastMessage.id === ele.id && lastMessage.message.message}
+                </Text>
+                <Text
+                  marginLeft={["2"]}
+                  color={"black"}
+                  fontSize={["sm"]}
+                  fontWeight={["normal"]}
+                >
+                  {lastMessage.id === ele.id &&
+                    Time.MsToClock(lastMessage.message.time)}
+                </Text>
+              </Flex>
             </div>
           </div>
         ))}

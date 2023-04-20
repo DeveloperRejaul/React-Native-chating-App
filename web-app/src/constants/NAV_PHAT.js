@@ -1,4 +1,4 @@
-export default {
+export const NAV_PHAT = {
   HOME: "/",
   MAIN: "/main",
   SIGNUP: "/auth/signup",

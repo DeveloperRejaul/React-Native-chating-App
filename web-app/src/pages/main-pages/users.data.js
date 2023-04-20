@@ -1,10 +1,10 @@
-import IMG_PHAT from "../../constants/IMG_PHAT";
+import { IMG_PHAT } from "../../constants/IMG_PHAT";
+import { v4 as uuidv4 } from "uuid";
 
-export default [
+export const userData = [
   {
-    id: "1",
+    id: uuidv4(),
     name: "Rejaul",
-    messages: ["hi", "hello"],
     isOnline: true,
     profusion: "Chef Executive Officer ",
     profileImage: IMG_PHAT.rejaul,
@@ -13,9 +13,8 @@ export default [
     debitis saepe.`,
   },
   {
-    id: "2",
+    id: uuidv4(),
     name: "Kamal",
-    messages: ["hi", "hello"],
     isOnline: false,
     profusion: "Full stack developer",
     profileImage: IMG_PHAT.kamal,
@@ -24,9 +23,8 @@ export default [
     debitis saepe.`,
   },
   {
-    id: "3",
+    id: uuidv4(),
     name: "Jamal",
-    messages: ["hi", "hello"],
     isOnline: true,
     profusion: "React native developer ",
     profileImage: IMG_PHAT.jamal,

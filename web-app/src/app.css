@@ -128,7 +128,34 @@ form {
 .chat-body::-webkit-scrollbar-thumb:active {
   background-color: #5b51ce;
 }
+/* Chat */
+.chatTextAria {
+  resize: none;
+  width: 95%;
+  padding: 10px 10px 10px 15px;
+}
+.chatTextAria:focus {
+  outline: none;
+  border: none;
+}
 
+.message {
+  background-color: #537fe7;
+  padding: 5px 10px 5px 10px;
+  color: white;
+  font-weight: 400;
+  border-radius: 7px;
+}
+.messageRight {
+  display: flex;
+  justify-content: flex-end;
+  margin: 5px 0px 5px 0px;
+}
+.messageLeft {
+  display: flex;
+  justify-content: flex-start;
+  margin: 5px 0px 5px 0px;
+}
 .error {
   color: brown;
 }

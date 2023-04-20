@@ -6,7 +6,7 @@ import SignupPage from "../pages/signup-pages/Index";
 import ErrorPage from "../pages/error-pages/Index";
 import MainPage from "../pages/main-pages/Index";
 import Protected from "./Protected";
-import NAV_PHAT from "../constants/NAV_PHAT";
+import { NAV_PHAT } from "../constants/NAV_PHAT";
 
 function Navigation() {
   const isLogin = true;
