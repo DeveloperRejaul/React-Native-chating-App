@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-const authMiddleware = async (req, res, next) => {
+const authMiddleware = async (req, _res, next) => {
   try {
     const token = await jwt.sign(
       {

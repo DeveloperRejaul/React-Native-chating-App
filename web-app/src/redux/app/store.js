@@ -3,7 +3,16 @@ import {
   createImmutableStateInvariantMiddleware,
 } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
-import { persistReducer, persistStore } from "redux-persist";
+import {
+  persistReducer,
+  persistStore,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import authReducer from "../features/authSlice";
 import { chatApi } from "../services/chatApi";
@@ -12,8 +21,6 @@ import { chatApi } from "../services/chatApi";
 const persistConfig = {
   key: "root",
   storage: storage,
-  whitelist: [""],
-  blacklist: ["auth"],
 };
 
 // persist reducer
@@ -25,12 +32,12 @@ export const chatStore = configureStore({
     auth: persistedAuthReducer,
   },
   devTools: process.env.NODE_ENV !== "production",
-  middleware:(getDefaultMiddleware) =>
+  middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(apiSlice.middleware),
+    }).concat(chatApi.middleware),
 });
 
 setupListeners(chatStore.dispatch);

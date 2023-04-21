@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import "../../app.css";
 import { Box, Text, useDisclosure } from "@chakra-ui/react";
 import Avatar from "../../components/Avatar/Avatar";
@@ -8,10 +8,32 @@ import { BsSendFill } from "react-icons/bs";
 import { headerHeight } from "./constences";
 import { IoEllipsisVertical } from "react-icons/io5";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import {
+  useCreateRoomMutation,
+  useGetRoomChatMessageQuery,
+} from "../../redux/services/chatApi";
 
 function Chat({ chatUser = {}, chatMessage = [{}], setChatMessage }) {
+  const roomId = useRef();
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [inputValue, setInputValue] = useState("");
+  const [createChatRoom, response] = useCreateRoomMutation();
+  // const allMessage = useGetRoomChatMessageQuery();
+
+  const myId = useSelector((state) => state.auth.id);
+  const messageReceiverId = chatUser._id;
+
+  useEffect(() => {
+    const handleRoom = () => {
+      createChatRoom({ userId: myId, otherUserId: messageReceiverId });
+    };
+    handleRoom();
+  }, [chatUser]);
+
+  roomId.current = response.data;
+  console.log(roomId);
 
   const handelSendMessage = () => {
     inputValue !== "" &&

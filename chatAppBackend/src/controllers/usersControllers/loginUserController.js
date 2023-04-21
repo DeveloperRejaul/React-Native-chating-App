@@ -13,12 +13,13 @@ const loginUserController = async (req, res) => {
 
   try {
     const user = await User.findOne({ email });
+
     if (user.password === password) {
       res.status(200).send({
         message: "user is ok",
+        id: user._id,
+        image: user.profilePicture,
         token: token,
-        email: email,
-        userId: user._id,
       });
     }
   } catch (error) {

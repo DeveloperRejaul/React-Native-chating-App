@@ -16,7 +16,13 @@ function LoginPage() {
 
   useEffect(() => {
     if (response.isSuccess) {
-      dispatch(handleLogin({ type: "login", payload: response.data.token }));
+      dispatch(
+        handleLogin({
+          id: response.data.id,
+          image: response.data.image,
+          token: response.data.token,
+        })
+      );
       navigate("/main");
     }
   }, [response]);

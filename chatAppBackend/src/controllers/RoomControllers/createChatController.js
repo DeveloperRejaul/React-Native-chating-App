@@ -1,5 +1,12 @@
 const { Room, User } = require("../../models/model.js");
 
+/**
+ * @param {Object} req
+ * @param {Object} res
+ * @Title : Create Chat Room
+ * @method : [POST]
+ * @route : "http://localhost:3000/api/chat"
+ */
 const createChatController = async (req, res) => {
   try {
     const { userId, otherUserId } = req.body;
@@ -19,7 +26,7 @@ const createChatController = async (req, res) => {
     });
 
     if (chatRoom) {
-      return res.status(200).json(chatRoom);
+      return res.status(200).json(chatRoom._id);
     }
 
     // Create new chat room

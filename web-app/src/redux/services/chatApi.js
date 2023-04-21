@@ -27,7 +27,32 @@ export const chatApi = createApi({
         },
       }),
     }),
+
+    // create one by one room
+    createRoom: builder.mutation({
+      query: (data) => ({
+        url: "/chat",
+        method: "POST",
+        body: data,
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      }),
+    }),
+
+    // create one by one room
+    getRoomChatMessage: builder.query({
+      query: (roomId) => ({
+        url: `/message/${roomId}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useGetAllUsersQuery, useLoginUserMutation } = chatApi;
+export const {
+  useGetAllUsersQuery,
+  useLoginUserMutation,
+  useCreateRoomMutation,
+  useGetRoomChatMessageQuery,
+} = chatApi;
