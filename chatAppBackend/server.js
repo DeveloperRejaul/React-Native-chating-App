@@ -11,7 +11,7 @@ const messageRoute = require("./src/routes/message.route.js");
 const socketConnection = require("./src/socket/socketConnection.js");
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000", "http://172.22.64.1:8081", "*"],
+    origin: ["http://localhost:3001"],
   },
 });
 app.use(express.urlencoded({ extended: true }));

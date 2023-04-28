@@ -1,5 +1,13 @@
 const { Message, Room } = require("../../models/model.js");
 
+/**
+ * @param {Object} req
+ * @param {Object} res
+ * @Title : Create Chat Message
+ * @method : [POST]
+ * @route : "http://localhost:3000/api/message"
+ */
+
 const sendMessageController = async (req, res) => {
   const { text, sender, chatRoom } = req.body;
   try {

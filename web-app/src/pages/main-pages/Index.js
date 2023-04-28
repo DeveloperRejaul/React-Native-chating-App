@@ -1,11 +1,12 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import "../../app.css";
 import { Box, useDimensions } from "@chakra-ui/react";
-
 import SliderCom from "../../components/Slider/Slider";
 import Users from "./Users";
 import Chat from "./Chat";
 import DefaultChat from "./DefaultChat";
+import { io } from "socket.io-client";
+import { socketServices } from "../../utilits/socketServices";
 
 function MainPage() {
   const elementRef = useRef();
@@ -13,10 +14,7 @@ function MainPage() {
 
   const [isChat, setIsChat] = useState(false);
   const [chatUser, setChatUser] = useState({});
-  const [chatMessage, setChatMessage] = useState([
-    { type: "messageRight", message: "hello", time: Date.now() },
-    { type: "messageLeft", message: "hello", time: Date.now() },
-  ]);
+  const [chatMessage, setChatMessage] = useState([]);
 
   const dimensions = useDimensions(elementRef, true);
   const displayCondition = isChat && dimensions?.contentBox.width < 765;
@@ -28,6 +26,10 @@ function MainPage() {
 
   const handleSlider = useCallback((data) => {
     slider.current = data;
+  }, []);
+
+  useEffect(() => {
+    socketServices.initializeSocket();
   }, []);
 
   return (

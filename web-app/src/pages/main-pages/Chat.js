@@ -11,38 +11,61 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import {
   useCreateRoomMutation,
-  useGetRoomChatMessageQuery,
+  useCreateChatMessageMutation,
 } from "../../redux/services/chatApi";
+import { socketServices } from "../../utilits/socketServices";
 
 function Chat({ chatUser = {}, chatMessage = [{}], setChatMessage }) {
-  const roomId = useRef();
-
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [inputValue, setInputValue] = useState("");
-  const [createChatRoom, response] = useCreateRoomMutation();
-  // const allMessage = useGetRoomChatMessageQuery();
 
+  const [createChatRoom, response] = useCreateRoomMutation();
+  const [createChatMessage, _] = useCreateChatMessageMutation();
+  const roomId = useRef();
   const myId = useSelector((state) => state.auth.id);
   const messageReceiverId = chatUser._id;
 
   useEffect(() => {
-    const handleRoom = () => {
+    const handleRoom = async () => {
       createChatRoom({ userId: myId, otherUserId: messageReceiverId });
+      await socketServices.emit("joinRoom", roomId.current, (sms) => {
+        console.log(sms); //TODO
+      });
     };
     handleRoom();
-  }, [chatUser]);
+  }, [messageReceiverId]);
 
-  roomId.current = response.data;
-  console.log(roomId);
+  useEffect(() => {
+    const getAllMessage = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:3000/api/message/${roomId.current}`
+        );
+        const data = await response.json();
+        setChatMessage([...data.allMessage.messages]);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (response.data) {
+      roomId.current = response.data;
+      getAllMessage();
+    }
+  }, [response, messageReceiverId]);
 
-  const handelSendMessage = () => {
+  const handelSendMessage = async () => {
     inputValue !== "" &&
-      setChatMessage((pre) => [
-        ...pre,
-        { type: "messageRight", message: inputValue, time: Date.now() },
-      ]);
+      setChatMessage((pre) => [...pre, { sender: myId, text: inputValue }]);
     setInputValue("");
+    await socketServices.emit("sendMessage", roomId.current, inputValue);
+
+    createChatMessage({
+      text: inputValue,
+      sender: myId,
+      chatRoom: roomId.current,
+    });
   };
+
   return (
     <Box
       width={"100"}
@@ -125,8 +148,13 @@ function Chat({ chatUser = {}, chatMessage = [{}], setChatMessage }) {
         {chatMessage
           ?.map((element, index) => {
             return (
-              <Box className={element?.type} key={index}>
-                <Text className="message">{element?.message}</Text>
+              <Box
+                className={
+                  element?.sender === myId ? "messageRight" : "messageLeft"
+                }
+                key={index}
+              >
+                <Text className="message">{element?.text}</Text>
               </Box>
             );
           })
