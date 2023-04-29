@@ -39,15 +39,15 @@ function Chat({ chatUser = {} }) {
 
   var count = 0;
   useEffect(() => {
-    socket.current.on("receiveMessage", (message) => {
-      count++;
-      if (count === 1) {
+    count++;
+    if (count == 1) {
+      socket.current.on("receiveMessage", (message) => {
         setChatMessage((pre) => [
           ...pre,
           { sender: receiveMessageUserId, text: message },
         ]);
-      }
-    });
+      });
+    }
   }, [socket.current]);
 
   return (
