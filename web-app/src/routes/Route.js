@@ -4,10 +4,10 @@ import HomePage from "../pages/home-pages";
 import LoginPage from "../pages/login-pages/Index";
 import SignupPage from "../pages/signup-pages/Index";
 import ErrorPage from "../pages/error-pages/Index";
-import MainPage from "../pages/main-pages/Index";
 import Protected from "./Protected";
 import { NAV_PHAT } from "../constants/NAV_PHAT";
 import { useSelector } from "react-redux";
+import MainPage from "../pages/main-pages/Index";
 
 function Navigation() {
   const isLogin = useSelector((state) => state.auth);

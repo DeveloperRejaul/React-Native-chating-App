@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../../app.css";
 import { Box, Text, useDisclosure } from "@chakra-ui/react";
 import Avatar from "../../components/Avatar/Avatar";
@@ -7,64 +7,48 @@ import { BiSearch } from "react-icons/bi";
 import { BsSendFill } from "react-icons/bs";
 import { headerHeight } from "./constences";
 import { IoEllipsisVertical } from "react-icons/io5";
-import { useState } from "react";
 import { useSelector } from "react-redux";
 import {
-  useCreateRoomMutation,
   useCreateChatMessageMutation,
+  useCreateRoomMutation,
 } from "../../redux/services/chatApi";
-import { socketServices } from "../../utilits/socketServices";
+import { useChatContext } from "../../context/ChatContext";
 
-function Chat({ chatUser = {}, chatMessage = [{}], setChatMessage }) {
+function Chat({ chatUser = {} }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [inputValue, setInputValue] = useState("");
-
-  const [createChatRoom, response] = useCreateRoomMutation();
   const [createChatMessage, _] = useCreateChatMessageMutation();
-  const roomId = useRef();
+  const [createRoom, response] = useCreateRoomMutation();
   const myId = useSelector((state) => state.auth.id);
-  const messageReceiverId = chatUser._id;
+  const receiveMessageUserId = chatUser._id;
+  const roomId = useRef(null);
+  const { chatMessage, setChatMessage, socket } = useChatContext();
 
   useEffect(() => {
-    const handleRoom = async () => {
-      createChatRoom({ userId: myId, otherUserId: messageReceiverId });
-      await socketServices.emit("joinRoom", roomId.current, (sms) => {
-        console.log(sms); //TODO
-      });
-    };
-    handleRoom();
-  }, [messageReceiverId]);
-
-  useEffect(() => {
-    const getAllMessage = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:3000/api/message/${roomId.current}`
-        );
-        const data = await response.json();
-        setChatMessage([...data.allMessage.messages]);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    if (response.data) {
-      roomId.current = response.data;
-      getAllMessage();
-    }
-  }, [response, messageReceiverId]);
+    socket.current.emit("joinRoom", "123", (sms) => {
+      console.log(sms);
+    });
+  }, []);
 
   const handelSendMessage = async () => {
     inputValue !== "" &&
       setChatMessage((pre) => [...pre, { sender: myId, text: inputValue }]);
     setInputValue("");
-    await socketServices.emit("sendMessage", roomId.current, inputValue);
-
-    createChatMessage({
-      text: inputValue,
-      sender: myId,
-      chatRoom: roomId.current,
-    });
+    socket.current.emit("sendMessage", "123", inputValue);
   };
+
+  var count = 0;
+  useEffect(() => {
+    socket.current.on("receiveMessage", (message) => {
+      count++;
+      if (count === 1) {
+        setChatMessage((pre) => [
+          ...pre,
+          { sender: receiveMessageUserId, text: message },
+        ]);
+      }
+    });
+  }, [socket.current]);
 
   return (
     <Box
