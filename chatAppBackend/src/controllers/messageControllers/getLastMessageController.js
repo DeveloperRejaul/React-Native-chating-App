@@ -28,7 +28,7 @@ const getLastMessageController = async (req, res) => {
         lastMessage: lastMessage.text,
       };
     });
-    res.send({ allRooms });
+    res.send({ lastMessagesInfo });
   } catch (error) {
     console.log(error.message);
   }

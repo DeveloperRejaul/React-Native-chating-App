@@ -21,26 +21,61 @@ function Chat({ chatUser = {} }) {
   const [createRoom, response] = useCreateRoomMutation();
   const myId = useSelector((state) => state.auth.id);
   const receiveMessageUserId = chatUser._id;
-  const roomId = useRef(null);
   const { chatMessage, setChatMessage, socket } = useChatContext();
 
   useEffect(() => {
-    socket.current.emit("joinRoom", "123", (sms) => {
-      console.log(sms);
-    });
-  }, []);
+    if (receiveMessageUserId) {
+      createRoom({
+        userId: myId,
+        otherUserId: receiveMessageUserId,
+      });
+    }
+  }, [receiveMessageUserId]);
+
+  useEffect(() => {
+    const init = async () => {
+      if (response.status === "fulfilled") {
+        try {
+          socket.current.emit("joinRoom", response.data, (sms) => {
+            console.log(sms);
+          });
+
+          const fetchData = await fetch(
+            `http://localhost:3000/api/message/${response.data}`
+          );
+          const data = await fetchData.json();
+          setChatMessage([...data.allMessage.messages]);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+
+    init();
+  }, [response.status]);
 
   const handelSendMessage = async () => {
-    inputValue !== "" &&
-      setChatMessage((pre) => [...pre, { sender: myId, text: inputValue }]);
-    setInputValue("");
-    socket.current.emit("sendMessage", "123", inputValue);
+    if (inputValue !== "") {
+      setChatMessage((pre) => [
+        ...pre,
+        { sender: myId, text: inputValue, receiverId: receiveMessageUserId },
+      ]);
+      setInputValue("");
+      if (response.status === "fulfilled") {
+        socket.current.emit("sendMessage", response.data, inputValue);
+        createChatMessage({
+          text: inputValue,
+          sender: myId,
+          chatRoom: response.data,
+        });
+      }
+    }
   };
 
-  var count = 0;
+  var countResiveMessage = 0;
   useEffect(() => {
-    count++;
-    if (count == 1) {
+    countResiveMessage++;
+    if (countResiveMessage == 1) {
       socket.current.on("receiveMessage", (message) => {
         setChatMessage((pre) => [
           ...pre,
@@ -49,7 +84,6 @@ function Chat({ chatUser = {} }) {
       });
     }
   }, [socket.current]);
-
   return (
     <Box
       width={"100"}

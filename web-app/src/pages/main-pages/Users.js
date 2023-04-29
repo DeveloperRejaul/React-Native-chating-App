@@ -1,19 +1,20 @@
 import { Box, Stack, Text } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Avatar from "../../components/Avatar/Avatar";
 import { IoSearch } from "react-icons/io5";
 import { headerHeight } from "./constences";
 import "../../app.css";
-// import jwt_decode from "jwt-decode"; //TODO
 import { useSelector } from "react-redux";
+import { useChatContext } from "../../context/ChatContext";
 
 function Users({ handleChat, display, slider }) {
   const [users, setUsers] = useState([]);
+  const [lastMessage, setLastMessage] = useState([]);
 
+  const { chatMessage } = useChatContext();
   // get user info
   const user = useSelector((state) => state.auth);
   const { id, token, image } = user;
-  // const decoded = jwt_decode(token); //TODO
 
   useEffect(() => {
     const getAllUsers = async () => {
@@ -84,6 +85,7 @@ function Users({ handleChat, display, slider }) {
                   >
                     {ele.name}
                   </Text>
+                  <Text>Last Message</Text>
                 </div>
               </div>
             );
