@@ -12,8 +12,8 @@ const ChatContext = createContext(null);
 
 export function ChatProvider({ children }) {
   const [chatMessage, setChatMessage] = useState([]);
+  const [isChatting, setIsChatting] = useState(false);
   const socket = useRef(null);
-  const myId = useSelector((state) => state.auth.id);
 
   useEffect(() => {
     const socketInit = () => {
@@ -33,7 +33,9 @@ export function ChatProvider({ children }) {
   }, []);
 
   return (
-    <ChatContext.Provider value={{ socket, chatMessage, setChatMessage }}>
+    <ChatContext.Provider
+      value={{ socket, chatMessage, setChatMessage, setIsChatting, isChatting }}
+    >
       {children}
     </ChatContext.Provider>
   );

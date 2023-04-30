@@ -21,7 +21,8 @@ function Chat({ chatUser = {} }) {
   const [createRoom, response] = useCreateRoomMutation();
   const myId = useSelector((state) => state.auth.id);
   const receiveMessageUserId = chatUser._id;
-  const { chatMessage, setChatMessage, socket } = useChatContext();
+  const { chatMessage, setChatMessage, socket, setIsChatting } =
+    useChatContext();
 
   useEffect(() => {
     if (receiveMessageUserId) {
@@ -60,6 +61,7 @@ function Chat({ chatUser = {} }) {
         ...pre,
         { sender: myId, text: inputValue, receiverId: receiveMessageUserId },
       ]);
+      setIsChatting(true);
       setInputValue("");
       if (response.status === "fulfilled") {
         socket.current.emit("sendMessage", response.data, inputValue);
@@ -83,6 +85,10 @@ function Chat({ chatUser = {} }) {
         ]);
       });
     }
+
+    return () => {
+      setIsChatting(false);
+    };
   }, [socket.current]);
   return (
     <Box
