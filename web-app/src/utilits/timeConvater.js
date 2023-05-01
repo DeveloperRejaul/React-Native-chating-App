@@ -1,8 +1,14 @@
-import moment from "moment/moment";
+import moment from "moment";
 
 export class Time {
-  static MsToClock(timestamp) {
-    const localTime = moment(timestamp).format("LTS");
-    return localTime;
+  static timeDiff(time) {
+    const createdAt = moment(time);
+    const currentTime = moment();
+    const timeDiff = currentTime.diff(createdAt);
+    return `${
+      moment.duration(timeDiff).humanize() === "a few seconds"
+        ? "Now"
+        : moment.duration(timeDiff).humanize() + " ago"
+    } `;
   }
 }

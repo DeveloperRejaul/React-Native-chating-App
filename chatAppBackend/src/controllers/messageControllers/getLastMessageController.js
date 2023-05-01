@@ -26,6 +26,7 @@ const getLastMessageController = async (req, res) => {
       return {
         receiverId: receiverId[0],
         lastMessage: lastMessage.text,
+        time: lastMessage.createdAt,
       };
     });
     res.send({ lastMessagesInfo });

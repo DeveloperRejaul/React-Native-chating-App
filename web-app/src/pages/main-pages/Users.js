@@ -1,5 +1,5 @@
-import { Box, Stack, Text } from "@chakra-ui/react";
-import React, { useEffect, useState, useRef } from "react";
+import { Box, HStack, Stack, Text, VStack } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
 import Avatar from "../../components/Avatar/Avatar";
 import { IoSearch } from "react-icons/io5";
 import { headerHeight } from "./constences";
@@ -10,52 +10,46 @@ import {
   useGetAllUsersQuery,
   useGetAllLastMessageQuery,
 } from "../../redux/services/chatApi";
+import { Time } from "../../utilits/timeConvater";
 
 function Users({ handleChat, display, slider }) {
   const [users, setUsers] = useState([]);
   const userId = useSelector((state) => state.auth.id);
   const { data, isSuccess } = useGetAllUsersQuery();
-  const lastMessages = useGetAllLastMessageQuery(userId);
-
+  const lastMessages = useGetAllLastMessageQuery(userId) || {};
   const { chatMessage, isChatting } = useChatContext();
 
   // get user info
   const user = useSelector((state) => state.auth);
-  const { id, token, image } = user;
+  const { id, image } = user;
 
   useEffect(() => {
-    if (data && lastMessages.isSuccess) {
+    if (data) {
       const newUser = data?.users;
-      const messages = lastMessages.data.lastMessagesInfo;
-      const newData = [];
-      if (!isChatting) {
-        newUser.forEach((data, i) => {
-          messages.forEach((messageData, j) => {
-            if (messageData.receiverId == data._id) {
-              newData.push({
-                ...data,
-                message: messageData.lastMessage,
-              });
-              setUsers([...newData]);
-            }
-          });
-        });
-      }
-    }
-    if (isChatting) {
-      const lastMessage = chatMessage[chatMessage.length - 1];
-      const updatedData = users.map((data) => {
-        if (data._id === lastMessage?.receiverId) {
-          return {
-            ...data,
-            message: lastMessage.text,
-          };
-        } else {
-          return data;
-        }
+      const messages = lastMessages?.data?.lastMessagesInfo || [];
+      const updatedUsers = newUser.map((user) => {
+        const { _id } = user;
+        const lastMessage = messages?.find((m) => m.receiverId === _id);
+        return {
+          ...user,
+          message: lastMessage?.lastMessage,
+          time: lastMessage?.time,
+        };
       });
 
-      setUsers([...updatedData]);
+      setUsers([...updatedUsers]);
+    }
+
+    // when isChatting
+    if (isChatting) {
+      const lastMessage = chatMessage[chatMessage.length - 1];
+      const updatedData = users.map((data) =>
+        data._id === lastMessage?.receiverId
+          ? { ...data, message: lastMessage.text, time: lastMessage.time }
+          : data
+      );
+
+      setUsers(updatedData);
     }
   }, [isSuccess, lastMessages, chatMessage, isChatting]);
 
@@ -103,17 +97,28 @@ function Users({ handleChat, display, slider }) {
                   image={ele.profilePicture}
                   isOnline={(ele.status = "ofline" ? false : true)}
                 />
-                <div>
-                  <Text
-                    marginLeft={["2"]}
-                    color={"black"}
-                    fontSize={["md"]}
-                    fontWeight={["medium"]}
-                  >
-                    {ele.name}
+                <VStack w={"100%"}>
+                  <HStack justifyContent={["space-between"]} width={"100%"}>
+                    <Text
+                      marginLeft={["2"]}
+                      color={"black"}
+                      fontSize={["md"]}
+                      fontWeight={["medium"]}
+                    >
+                      {ele.name}
+                    </Text>
+                    <Text
+                      color={"black"}
+                      fontSize={["sm"]}
+                      fontWeight={["normal"]}
+                    >
+                      {Time.timeDiff(ele.time)}
+                    </Text>
+                  </HStack>
+                  <Text style={{ marginLeft: "10px" }} alignSelf={"flex-start"}>
+                    {ele.message}
                   </Text>
-                  <Text>{ele.message}</Text>
-                </div>
+                </VStack>
               </div>
             );
           })}

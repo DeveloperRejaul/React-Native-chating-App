@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../app.css";
 import { Box, Text, useDisclosure } from "@chakra-ui/react";
 import Avatar from "../../components/Avatar/Avatar";
@@ -8,11 +8,13 @@ import { BsSendFill } from "react-icons/bs";
 import { headerHeight } from "./constences";
 import { IoEllipsisVertical } from "react-icons/io5";
 import { useSelector } from "react-redux";
+
 import {
   useCreateChatMessageMutation,
   useCreateRoomMutation,
 } from "../../redux/services/chatApi";
 import { useChatContext } from "../../context/ChatContext";
+import moment from "moment";
 
 function Chat({ chatUser = {} }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -59,7 +61,12 @@ function Chat({ chatUser = {} }) {
     if (inputValue !== "") {
       setChatMessage((pre) => [
         ...pre,
-        { sender: myId, text: inputValue, receiverId: receiveMessageUserId },
+        {
+          sender: myId,
+          text: inputValue,
+          receiverId: receiveMessageUserId,
+          time: moment(),
+        },
       ]);
       setIsChatting(true);
       setInputValue("");
