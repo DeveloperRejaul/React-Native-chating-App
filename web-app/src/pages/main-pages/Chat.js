@@ -71,7 +71,12 @@ function Chat({ chatUser = {} }) {
       setIsChatting(true);
       setInputValue("");
       if (response.status === "fulfilled") {
-        socket.current.emit("sendMessage", response.data, inputValue);
+        socket.current.emit(
+          "sendMessage",
+          response.data,
+          inputValue,
+          receiveMessageUserId
+        );
         createChatMessage({
           text: inputValue,
           sender: myId,

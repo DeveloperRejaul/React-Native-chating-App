@@ -1,5 +1,5 @@
 import { Box, HStack, Stack, Text, VStack } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Avatar from "../../components/Avatar/Avatar";
 import { IoSearch } from "react-icons/io5";
 import { headerHeight } from "./constences";
@@ -11,13 +11,23 @@ import {
   useGetAllLastMessageQuery,
 } from "../../redux/services/chatApi";
 import { Time } from "../../utilits/timeConvater";
+import moment from "moment";
 
 function Users({ handleChat, display, slider }) {
   const [users, setUsers] = useState([]);
   const userId = useSelector((state) => state.auth.id);
   const { data, isSuccess } = useGetAllUsersQuery();
   const lastMessages = useGetAllLastMessageQuery(userId) || {};
-  const { chatMessage, isChatting } = useChatContext();
+  const { chatMessage, isChatting, socket } = useChatContext();
+  const receiveMessageUserId = useRef(null);
+
+  // TODO 
+  socket.current?.on("receiveMessage", (message, receiverId) => {
+    const updatedData = users.map((data) =>
+      data._id === receiverId ? { ...data, message, time: moment() } : data
+    );
+    setUsers(updatedData);
+  });
 
   // get user info
   const user = useSelector((state) => state.auth);
@@ -39,10 +49,14 @@ function Users({ handleChat, display, slider }) {
 
       setUsers([...updatedUsers]);
     }
+  }, [isSuccess, lastMessages]);
 
-    // when isChatting
+  useEffect(() => {
     if (isChatting) {
-      const lastMessage = chatMessage[chatMessage.length - 1];
+      const lastMessage =
+        chatMessage[chatMessage.length - 1] !== undefined &&
+        chatMessage[chatMessage.length - 1];
+
       const updatedData = users.map((data) =>
         data._id === lastMessage?.receiverId
           ? { ...data, message: lastMessage.text, time: lastMessage.time }
@@ -51,10 +65,11 @@ function Users({ handleChat, display, slider }) {
 
       setUsers(updatedData);
     }
-  }, [isSuccess, lastMessages, chatMessage, isChatting]);
+  }, [isChatting, chatMessage]);
 
   const handleClick = (data) => {
     handleChat(data);
+    receiveMessageUserId.current = data._id;
     if (slider !== undefined) {
       slider.current();
     }

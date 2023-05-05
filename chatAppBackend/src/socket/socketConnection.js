@@ -15,8 +15,9 @@ const socketConnection = (socket, io) => {
     callback("joined");
   });
 
-  socket.on("sendMessage", (roomName, message) => {
+  socket.on("sendMessage", (roomName, message, receiveMessageUserId) => {
     socket.to(roomName).emit("receiveMessage", message);
+    socket.broadcast.emit("receiveMessage", message, receiveMessageUserId);
   });
 
   socket.on("getLastMessage", async (userId) => {
