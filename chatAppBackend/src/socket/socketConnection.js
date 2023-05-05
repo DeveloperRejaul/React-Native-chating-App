@@ -1,25 +1,32 @@
 const { Room } = require("../models/model");
+const {
+  DIS_CONNECT,
+  SEND_MESSAGE,
+  JOIN_ROOM,
+  RECEIVE_MESSAGE,
+} = require("./action");
 
 const socketConnection = (socket, io) => {
   console.log("a user connected: " + socket.id);
-  socket.on("disconnect", () => {
+  socket.on(DIS_CONNECT, () => {
     console.log("user disconnected: " + socket.id);
   });
 
-  socket.on("send-message", (data) => {
+  socket.on(SEND_MESSAGE, (data) => {
     console.log(data);
   });
 
-  socket.on("joinRoom", (roomName, callback) => {
+  socket.on(JOIN_ROOM, (roomName, callback) => {
     socket.join(roomName);
     callback("joined");
   });
 
   socket.on("sendMessage", (roomName, message, receiveMessageUserId) => {
-    socket.to(roomName).emit("receiveMessage", message);
-    socket.broadcast.emit("receiveMessage", message, receiveMessageUserId);
+    socket.to(roomName).emit(RECEIVE_MESSAGE, message);
+    socket.broadcast.emit(RECEIVE_MESSAGE, message, receiveMessageUserId);
   });
 
+  //todo
   socket.on("getLastMessage", async (userId) => {
     const data = await getData(userId);
     socket.emit("lastMessage", data);

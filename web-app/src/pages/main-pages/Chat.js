@@ -15,6 +15,13 @@ import {
 } from "../../redux/services/chatApi";
 import { useChatContext } from "../../context/ChatContext";
 import moment from "moment";
+import { API_URL } from "../../config/config";
+import {
+  JOIN_ROOM,
+  RECEIVE_MESSAGE,
+  SEND_MESSAGE,
+  IS_TYPING,
+} from "../../constants/action";
 
 function Chat({ chatUser = {} }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -39,13 +46,11 @@ function Chat({ chatUser = {} }) {
     const init = async () => {
       if (response.status === "fulfilled") {
         try {
-          socket.current.emit("joinRoom", response.data, (sms) => {
+          socket.current.emit(JOIN_ROOM, response.data, (sms) => {
             console.log(sms);
           });
 
-          const fetchData = await fetch(
-            `http://localhost:3000/api/message/${response.data}`
-          );
+          const fetchData = await fetch(`${API_URL}/message/${response.data}`);
           const data = await fetchData.json();
           setChatMessage([...data.allMessage.messages]);
         } catch (error) {
@@ -72,7 +77,7 @@ function Chat({ chatUser = {} }) {
       setInputValue("");
       if (response.status === "fulfilled") {
         socket.current.emit(
-          "sendMessage",
+          SEND_MESSAGE,
           response.data,
           inputValue,
           receiveMessageUserId
@@ -90,7 +95,7 @@ function Chat({ chatUser = {} }) {
   useEffect(() => {
     countResiveMessage++;
     if (countResiveMessage == 1) {
-      socket.current.on("receiveMessage", (message) => {
+      socket.current.on(RECEIVE_MESSAGE, (message) => {
         setChatMessage((pre) => [
           ...pre,
           { sender: receiveMessageUserId, text: message },
@@ -102,6 +107,13 @@ function Chat({ chatUser = {} }) {
       setIsChatting(false);
     };
   }, [socket.current]);
+
+  const handelInput = (value) => {
+    setInputValue(value);
+    // TODO
+    // socket.current.emit(IS_TYPING, true);
+  };
+
   return (
     <Box
       width={"100"}
@@ -211,7 +223,7 @@ function Chat({ chatUser = {} }) {
         <input
           className="chatTextAria"
           value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={(e) => handelInput(e.target.value)}
         />
         <BsSendFill size={20} color="#537fe7" onClick={handelSendMessage} />
       </Box>

@@ -1,5 +1,6 @@
 import { io } from "socket.io-client";
-const SOCKET_URL = "http://localhost:3000";
+import { BASE_URL } from "../config/config";
+const SOCKET_URL = BASE_URL
 
 class SocketServices {
   initializeSocket = async () => {

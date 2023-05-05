@@ -12,6 +12,7 @@ import {
 } from "../../redux/services/chatApi";
 import { Time } from "../../utilits/timeConvater";
 import moment from "moment";
+import { RECEIVE_MESSAGE } from "../../constants/action";
 
 function Users({ handleChat, display, slider }) {
   const [users, setUsers] = useState([]);
@@ -21,8 +22,7 @@ function Users({ handleChat, display, slider }) {
   const { chatMessage, isChatting, socket } = useChatContext();
   const receiveMessageUserId = useRef(null);
 
-  // TODO 
-  socket.current?.on("receiveMessage", (message, receiverId) => {
+  socket.current?.on(RECEIVE_MESSAGE, (message, receiverId) => {
     const updatedData = users.map((data) =>
       data._id === receiverId ? { ...data, message, time: moment() } : data
     );

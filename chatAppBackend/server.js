@@ -9,6 +9,7 @@ const userRoute = require("./src/routes/user.route.js");
 const chatRoute = require("./src/routes/chat.route.js");
 const messageRoute = require("./src/routes/message.route.js");
 const socketConnection = require("./src/socket/socketConnection.js");
+const { CONNECTION } = require("./src/socket/action.js");
 const io = new Server(server, {
   cors: {
     origin: ["http://localhost:3001"],
@@ -27,7 +28,7 @@ app.get("/", (req, res) => {
   res.send({ message: "server in on" });
 });
 
-io.on("connection", (socket) => socketConnection(socket, io));
+io.on(CONNECTION, (socket) => socketConnection(socket, io));
 
 server.listen(config.appPort, () => {
   console.log("listening on *:" + config.appPort);

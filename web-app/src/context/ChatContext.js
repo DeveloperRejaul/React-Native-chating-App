@@ -8,6 +8,8 @@ import {
   useCallback,
 } from "react";
 import { useSelector } from "react-redux";
+import { BASE_URL } from "../config/config";
+import { CONNECT, DIS_CONNECT } from "../constants/action";
 const ChatContext = createContext(null);
 
 export function ChatProvider({ children }) {
@@ -17,9 +19,9 @@ export function ChatProvider({ children }) {
 
   useEffect(() => {
     const socketInit = () => {
-      socket.current = io("http://localhost:3000");
-      socket.current.on("connect", socketConnect);
-      socket.current.on("disconnect", socketDisconnect);
+      socket.current = io(BASE_URL);
+      socket.current.on(CONNECT, socketConnect);
+      socket.current.on(DIS_CONNECT, socketDisconnect);
     };
     socketInit();
   }, []);
