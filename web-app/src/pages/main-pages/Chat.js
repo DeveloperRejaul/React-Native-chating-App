@@ -1,29 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "../../app.css";
 import { Box, Text, useDisclosure } from "@chakra-ui/react";
-import Avatar from "../../components/Avatar/Avatar";
-import DrawerCom from "../../components/Drawer/Drawer";
 import { BiSearch } from "react-icons/bi";
 import { BsSendFill } from "react-icons/bs";
 import { headerHeight } from "./constences";
 import { IoEllipsisVertical } from "react-icons/io5";
 import { useSelector } from "react-redux";
-
+import moment from "moment";
 import {
   useCreateChatMessageMutation,
   useCreateRoomMutation,
 } from "../../redux/services/chatApi";
 import { useChatContext } from "../../context/ChatContext";
-import moment from "moment";
 import { API_URL } from "../../config/config";
+import Avatar from "../../components/Avatar/Avatar";
+import DrawerCom from "../../components/Drawer/Drawer";
+import typingIndicator from "../../assets/lottie/typingIndicator.json";
 import {
   JOIN_ROOM,
   RECEIVE_MESSAGE,
   SEND_MESSAGE,
-  IS_TYPING,
+  TYPING,
+  STOP_TYPING,
 } from "../../constants/action";
+import LottieCom from "../../components/Lottie/Lottie";
 
 function Chat({ chatUser = {} }) {
+  const [typing, setTyping] = useState(false);
+  const [typingEffect, setTypingEffect] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [inputValue, setInputValue] = useState("");
   const [createChatMessage, _] = useCreateChatMessageMutation();
@@ -32,6 +36,7 @@ function Chat({ chatUser = {} }) {
   const receiveMessageUserId = chatUser._id;
   const { chatMessage, setChatMessage, socket, setIsChatting } =
     useChatContext();
+  const timeoutIdRef = useRef(null);
 
   useEffect(() => {
     if (receiveMessageUserId) {
@@ -62,6 +67,23 @@ function Chat({ chatUser = {} }) {
     init();
   }, [response.status]);
 
+  var countResiveMessage = 0;
+  useEffect(() => {
+    countResiveMessage++;
+    if (countResiveMessage == 1) {
+      socket.current.on(RECEIVE_MESSAGE, (message) => {
+        setChatMessage((pre) => [
+          ...pre,
+          { sender: receiveMessageUserId, text: message },
+        ]);
+      });
+    }
+
+    return () => {
+      setIsChatting(false);
+    };
+  }, [socket.current]);
+
   const handelSendMessage = async () => {
     if (inputValue !== "") {
       setChatMessage((pre) => [
@@ -91,29 +113,37 @@ function Chat({ chatUser = {} }) {
     }
   };
 
-  var countResiveMessage = 0;
-  useEffect(() => {
-    countResiveMessage++;
-    if (countResiveMessage == 1) {
-      socket.current.on(RECEIVE_MESSAGE, (message) => {
-        setChatMessage((pre) => [
-          ...pre,
-          { sender: receiveMessageUserId, text: message },
-        ]);
-      });
+  // handle typing Effect
+  const handleTyping = (type) => {
+    const duration = 3000;
+    const lastTyping = new Date().getTime();
+    if (type === "KEYDOWN") {
+      if (!typing) {
+        setTyping(true);
+        socket.current.emit(TYPING, "typing", response.data);
+      }
+    } else {
+      clearTimeout(timeoutIdRef.current);
+      timeoutIdRef.current = setTimeout(() => {
+        const currentTime = new Date().getTime();
+        const timeDiff = currentTime - lastTyping;
+        if (timeDiff >= duration) {
+          if (typing) {
+            setTyping(false);
+            socket.current.emit(STOP_TYPING, "stop typing", response.data);
+          }
+        }
+      }, duration);
     }
-
-    return () => {
-      setIsChatting(false);
-    };
-  }, [socket.current]);
-
-  const handelInput = (value) => {
-    setInputValue(value);
-    // TODO
-    // socket.current.emit(IS_TYPING, true);
   };
 
+  socket.current.on(TYPING, (message) => {
+    setTypingEffect(true);
+  });
+
+  socket.current.on(STOP_TYPING, (message) => {
+    setTypingEffect(false);
+  });
   return (
     <Box
       width={"100"}
@@ -208,7 +238,7 @@ function Chat({ chatUser = {} }) {
           })
           .reverse()}
       </Box>
-
+      {typingEffect && <LottieCom animation={typingIndicator} />}
       {/* Chat Footer */}
       <Box
         display={"flex"}
@@ -223,7 +253,9 @@ function Chat({ chatUser = {} }) {
         <input
           className="chatTextAria"
           value={inputValue}
-          onChange={(e) => handelInput(e.target.value)}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={() => handleTyping("KEYDOWN")}
+          onKeyUp={() => handleTyping("KEYUP")}
         />
         <BsSendFill size={20} color="#537fe7" onClick={handelSendMessage} />
       </Box>

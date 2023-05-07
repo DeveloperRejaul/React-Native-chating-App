@@ -4,6 +4,8 @@ const {
   SEND_MESSAGE,
   JOIN_ROOM,
   RECEIVE_MESSAGE,
+  TYPING,
+  STOP_TYPING,
 } = require("./action");
 
 const socketConnection = (socket, io) => {
@@ -21,9 +23,17 @@ const socketConnection = (socket, io) => {
     callback("joined");
   });
 
-  socket.on("sendMessage", (roomName, message, receiveMessageUserId) => {
+  socket.on(SEND_MESSAGE, (roomName, message, receiveMessageUserId) => {
     socket.to(roomName).emit(RECEIVE_MESSAGE, message);
     socket.broadcast.emit(RECEIVE_MESSAGE, message, receiveMessageUserId);
+  });
+
+  socket.on(TYPING, (message, roomName) => {
+    socket.to(roomName).emit(TYPING, message);
+  });
+
+  socket.on(STOP_TYPING, (message, roomName) => {
+    socket.to(roomName).emit(STOP_TYPING, message);
   });
 
   //todo

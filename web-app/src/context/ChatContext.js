@@ -9,7 +9,7 @@ import {
 } from "react";
 import { useSelector } from "react-redux";
 import { BASE_URL } from "../config/config";
-import { CONNECT, DIS_CONNECT } from "../constants/action";
+import { CONNECT, DIS_CONNECT, TYPING } from "../constants/action";
 const ChatContext = createContext(null);
 
 export function ChatProvider({ children }) {
