@@ -12,22 +12,30 @@ import {
 } from "../../redux/services/chatApi";
 import { Time } from "../../utilits/timeConvater";
 import moment from "moment";
-import { RECEIVE_MESSAGE } from "../../constants/action";
+import { LAST_MESSAGE } from "../../constants/action";
 
-function Users({ handleChat, display, slider }) {
+function Users({ display }) {
   const [users, setUsers] = useState([]);
   const userId = useSelector((state) => state.auth.id);
   const { data, isSuccess } = useGetAllUsersQuery();
   const lastMessages = useGetAllLastMessageQuery(userId) || {};
-  const { chatMessage, isChatting, socket } = useChatContext();
+  const { chatMessage, isChatting, socket, setIsChat, setChatUser, slider } =
+    useChatContext();
   const receiveMessageUserId = useRef(null);
 
-  socket.current?.on(RECEIVE_MESSAGE, (message, receiverId) => {
-    const updatedData = users.map((data) =>
-      data._id === receiverId ? { ...data, message, time: moment() } : data
-    );
-    setUsers(updatedData);
-  });
+  console.log(chatMessage[chatMessage.length - 1]?.text);
+
+  // useEffect(() => {
+  //   socket.current?.on(LAST_MESSAGE, (message, receiverId) => {
+  //     // const updatedData = users.map((data) =>
+  //     //   data._id === receiverId ? { ...data, message, time: moment() } : data
+  //     // );
+  //     // setUsers(updatedData);
+  //   });
+  //   return () => {
+  //     socket.current?.off(LAST_MESSAGE);
+  //   };
+  // }, []);
 
   // get user info
   const user = useSelector((state) => state.auth);
@@ -68,11 +76,9 @@ function Users({ handleChat, display, slider }) {
   }, [isChatting, chatMessage]);
 
   const handleClick = (data) => {
-    handleChat(data);
+    setIsChat(true);
+    setChatUser({ ...data });
     receiveMessageUserId.current = data._id;
-    if (slider !== undefined) {
-      slider.current();
-    }
   };
 
   return (

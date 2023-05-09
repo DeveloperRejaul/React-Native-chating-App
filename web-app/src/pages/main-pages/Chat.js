@@ -67,24 +67,9 @@ function Chat({ chatUser = {} }) {
     init();
   }, [response.status]);
 
-  var countResiveMessage = 0;
-  useEffect(() => {
-    countResiveMessage++;
-    if (countResiveMessage == 1) {
-      socket.current.on(RECEIVE_MESSAGE, (message) => {
-        setChatMessage((pre) => [
-          ...pre,
-          { sender: receiveMessageUserId, text: message },
-        ]);
-      });
-    }
-
-    return () => {
-      setIsChatting(false);
-    };
-  }, [socket.current]);
-
   const handelSendMessage = async () => {
+    socket.current.emit(STOP_TYPING, "stop typing", response.data);
+    clearTimeout(timeoutIdRef.current);
     if (inputValue !== "") {
       setChatMessage((pre) => [
         ...pre,
@@ -114,7 +99,7 @@ function Chat({ chatUser = {} }) {
   };
 
   // handle typing Effect
-  const handleTyping = (type) => {
+  const handleTyping = (type, e) => {
     const duration = 3000;
     const lastTyping = new Date().getTime();
     if (type === "KEYDOWN") {
@@ -135,15 +120,30 @@ function Chat({ chatUser = {} }) {
         }
       }, duration);
     }
+    if (e?.key === "Enter") handelSendMessage();
   };
 
-  socket.current.on(TYPING, (message) => {
-    setTypingEffect(true);
-  });
+  useEffect(() => {
+    socket.current.on(RECEIVE_MESSAGE, (message) => {
+      setChatMessage((pre) => [
+        ...pre,
+        { sender: receiveMessageUserId, text: message },
+      ]);
+    });
+    socket.current.on(TYPING, () => {
+      setTypingEffect(true);
+    });
 
-  socket.current.on(STOP_TYPING, (message) => {
-    setTypingEffect(false);
-  });
+    socket.current.on(STOP_TYPING, () => {
+      setTypingEffect(false);
+    });
+    return () => {
+      socket.current.off(RECEIVE_MESSAGE);
+      socket.current.off(TYPING);
+      socket.current.off(STOP_TYPING);
+    };
+  }, []);
+
   return (
     <Box
       width={"100"}
@@ -254,7 +254,7 @@ function Chat({ chatUser = {} }) {
           className="chatTextAria"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={() => handleTyping("KEYDOWN")}
+          onKeyDown={(e) => handleTyping("KEYDOWN", e)}
           onKeyUp={() => handleTyping("KEYUP")}
         />
         <BsSendFill size={20} color="#537fe7" onClick={handelSendMessage} />

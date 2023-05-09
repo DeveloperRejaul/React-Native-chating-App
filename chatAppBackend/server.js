@@ -10,14 +10,18 @@ const chatRoute = require("./src/routes/chat.route.js");
 const messageRoute = require("./src/routes/message.route.js");
 const socketConnection = require("./src/socket/socketConnection.js");
 const { CONNECTION } = require("./src/socket/action.js");
+const { join } = require("path");
 const io = new Server(server, {
   cors: {
     origin: ["http://localhost:3001"],
   },
 });
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
 app.use(cors());
+app.use(express.static(join(process.cwd(), "src/uploads")));
 config.dbConnect();
 
 app.use("/api/user", userRoute);

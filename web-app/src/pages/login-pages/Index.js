@@ -6,7 +6,7 @@ import { Validation } from "./validation";
 import { Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useLoginUserMutation } from "../../redux/services/chatApi";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { handleLogin } from "../../redux/features/authSlice";
 
 function LoginPage() {

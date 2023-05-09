@@ -5,3 +5,4 @@ export const SEND_MESSAGE = "sendMessage";
 export const RECEIVE_MESSAGE = "receiveMessage";
 export const TYPING = "typing";
 export const STOP_TYPING = "stopTyping";
+export const LAST_MESSAGE = "lastMessage";

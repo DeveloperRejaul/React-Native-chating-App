@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from "react";
+import React, { useRef, useCallback } from "react";
 import "../../app.css";
 import { Box, useDimensions } from "@chakra-ui/react";
 import SliderCom from "../../components/Slider/Slider";
@@ -9,29 +9,15 @@ import { useChatContext } from "../../context/ChatContext";
 
 export default function MainScreen() {
   const elementRef = useRef();
-  const slider = useRef();
-  const { chatMessage, setChatMessage } = useChatContext();
 
-  const [isChat, setIsChat] = useState(false);
-  const [chatUser, setChatUser] = useState({});
-
+  const { chatMessage, setChatMessage, chatUser, isChat } = useChatContext();
   const dimensions = useDimensions(elementRef, true);
   const displayCondition = isChat && dimensions?.contentBox.width < 765;
-
-  const handleChat = useCallback(async (data) => {
-    setIsChat(true);
-    setChatUser({ ...data });
-  }, []);
-
-  const handleSlider = useCallback((data) => {
-    slider.current = data;
-  }, []);
 
   return (
     <div style={styles.container} ref={elementRef}>
       {/* All user Part */}
       <Users
-        handleChat={handleChat}
         display={displayCondition && "none"}
         lastMessage={{
           message: chatMessage[chatMessage?.length - 1],
@@ -63,8 +49,8 @@ export default function MainScreen() {
       </Box>
 
       {displayCondition && (
-        <SliderCom handleSlider={handleSlider}>
-          <Users handleChat={handleChat} display={"block"} slider={slider} />
+        <SliderCom>
+          <Users display={"block"} />
         </SliderCom>
       )}
     </div>

@@ -3,9 +3,14 @@ import "../../app.css";
 import { Formik } from "formik";
 import { formValidation } from "./formValidation";
 import Button from "../../components/button/Button";
+import { API_URL } from "../../config/config";
+import axios from "axios";
+import { useToast } from "@chakra-ui/react";
 
 function SignupPage() {
   const [file, setFile] = useState("");
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
 
   return (
     <div className="container">
@@ -18,8 +23,43 @@ function SignupPage() {
             confirmPassword: "",
           }}
           validationSchema={formValidation}
-          onSubmit={(values) => {
-            console.log(values);
+          onSubmit={async (values) => {
+            const formData = new FormData();
+            formData.append("avatar", file);
+            formData.append(
+              "data",
+              JSON.stringify({
+                name: values.userName,
+                email: values.email,
+                password: values.confirmPassword,
+              })
+            );
+
+            try {
+              setLoading(true);
+              const url = `${API_URL}/user/register/`;
+              const data = await axios.post(url, formData);
+              setLoading(false);
+              if (data.status == 200) {
+                toast({
+                  title: "Account created.",
+                  description: "We've created your account for you.",
+                  status: "success",
+                  duration: 2000,
+                  isClosable: true,
+                  position: "top-right",
+                });
+              }
+            } catch (e) {
+              toast({
+                title: e.response.data.message,
+                description: "We've not created your account for you.",
+                status: "warning",
+                duration: 2000,
+                isClosable: true,
+                position: "top-right",
+              });
+            }
           }}
         >
           {({ handleChange, values, handleSubmit, errors, touched }) => (
@@ -108,7 +148,7 @@ function SignupPage() {
               <div className="signup-input-body">
                 <input
                   type="file"
-                  name="file"
+                  name="avatar"
                   onChange={(e) => setFile(e.target.files[0])}
                 />
               </div>

@@ -7,36 +7,46 @@ import {
   useRef,
   useCallback,
 } from "react";
-import { useSelector } from "react-redux";
 import { BASE_URL } from "../config/config";
-import { CONNECT, DIS_CONNECT, TYPING } from "../constants/action";
+import { CONNECT, DIS_CONNECT } from "../constants/action";
 const ChatContext = createContext(null);
 
 export function ChatProvider({ children }) {
   const [chatMessage, setChatMessage] = useState([]);
   const [isChatting, setIsChatting] = useState(false);
+  const [chatUser, setChatUser] = useState({});
+  const [isChat, setIsChat] = useState(false);
   const socket = useRef(null);
+  const slider = useRef();
 
   useEffect(() => {
     const socketInit = () => {
       socket.current = io(BASE_URL);
-      socket.current.on(CONNECT, socketConnect);
-      socket.current.on(DIS_CONNECT, socketDisconnect);
+      socket.current.on(CONNECT, () => console.log("connected"));
+      socket.current.on(DIS_CONNECT, () => console.log("disconnected"));
     };
     socketInit();
-  }, []);
 
-  const socketConnect = useCallback(() => {
-    console.log("connected");
-  }, []);
-
-  const socketDisconnect = useCallback(() => {
-    console.log("disconnected");
+    return () => {
+      socket.current.off(CONNECT);
+      socket.current.off(DIS_CONNECT);
+    };
   }, []);
 
   return (
     <ChatContext.Provider
-      value={{ socket, chatMessage, setChatMessage, setIsChatting, isChatting }}
+      value={{
+        socket,
+        chatMessage,
+        setChatMessage,
+        setIsChatting,
+        isChatting,
+        chatUser,
+        setChatUser,
+        isChat,
+        setIsChat,
+        slider,
+      }}
     >
       {children}
     </ChatContext.Provider>

@@ -6,6 +6,7 @@ const {
   RECEIVE_MESSAGE,
   TYPING,
   STOP_TYPING,
+  LAST_MESSAGE,
 } = require("./action");
 
 const socketConnection = (socket, io) => {
@@ -24,8 +25,8 @@ const socketConnection = (socket, io) => {
   });
 
   socket.on(SEND_MESSAGE, (roomName, message, receiveMessageUserId) => {
-    socket.to(roomName).emit(RECEIVE_MESSAGE, message);
-    socket.broadcast.emit(RECEIVE_MESSAGE, message, receiveMessageUserId);
+    io.sockets.in(roomName).emit(RECEIVE_MESSAGE, message);
+    io.sockets.emit(LAST_MESSAGE, message, receiveMessageUserId);
   });
 
   socket.on(TYPING, (message, roomName) => {

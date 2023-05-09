@@ -1,12 +1,14 @@
 import { Box, Slide, useDisclosure } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { IoCaretForwardOutline, IoCaretBackOutline } from "react-icons/io5";
+import { useChatContext } from "../../context/ChatContext";
 
-export default function SliderCom({ children, handleSlider = () => {} }) {
+export default function SliderCom({ children }) {
   const { isOpen, onToggle } = useDisclosure();
+  const { slider } = useChatContext();
 
   useEffect(() => {
-    handleSlider(onToggle);
+    slider.current = onToggle;
   });
 
   return (
