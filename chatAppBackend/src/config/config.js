@@ -4,7 +4,7 @@ const config = {
   appPort: process.env.PORT || 4000,
   dbConnect: async () => {
     try {
-      await mongoose.connect("mongodb://127.0.0.1:27017/ChattingApp");
+      await mongoose.connect(process.env.DB_URL);
       console.log("databass connected");
     } catch (error) {
       console.log("databass connection error " + error.message);

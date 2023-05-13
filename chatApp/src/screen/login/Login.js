@@ -7,6 +7,7 @@ import useApi from '../../api/useApi.js';
 import {useDispatch} from 'react-redux';
 import {handleAuth} from '../../redux/features/AuthSlice.js';
 import appInfo from '../../constent/appInfo.js';
+import {API_URL} from '../../constent/config.js';
 export default function Login({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
