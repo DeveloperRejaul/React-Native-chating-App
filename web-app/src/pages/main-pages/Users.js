@@ -67,7 +67,7 @@ function Users({ display }) {
               >
                 <Avatar
                   image={ele.profilePicture}
-                  isOnline={ele.status == "ofline" ? false : true}
+                  isOnline={ele.status == "offline" ? false : true}
                 />
                 <VStack w={"100%"}>
                   <HStack justifyContent={["space-between"]} width={"100%"}>

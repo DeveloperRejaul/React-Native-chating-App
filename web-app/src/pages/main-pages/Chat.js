@@ -171,7 +171,7 @@ function Chat() {
               fontWeight={["medium"]}
               color={["blackAlpha.500"]}
             >
-              {"chatUser.profusion"}
+              {chatUser.profusion}
             </Text>
           </Box>
         </Box>

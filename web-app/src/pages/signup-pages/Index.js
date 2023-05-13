@@ -6,11 +6,14 @@ import Button from "../../components/button/Button";
 import { API_URL } from "../../config/config";
 import axios from "axios";
 import { useToast } from "@chakra-ui/react";
+import { NAV_PHAT } from "../../constants/NAV_PHAT";
+import { useNavigate } from "react-router-dom";
 
 function SignupPage() {
   const [file, setFile] = useState("");
   const [loading, setLoading] = useState(false);
   const toast = useToast();
+  const navigate = useNavigate();
 
   return (
     <div className="container">
@@ -49,6 +52,7 @@ function SignupPage() {
                   isClosable: true,
                   position: "top-right",
                 });
+                navigate(NAV_PHAT.LOGIN);
               }
             } catch (e) {
               toast({

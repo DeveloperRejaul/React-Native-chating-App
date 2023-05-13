@@ -22,7 +22,7 @@ export default function DrawerCom({ onClose, isOpen, size, userData }) {
             justifyContent={"center"}
             alignItems={"center"}
           >
-            <Avatar image={userData.profileImage} size={25} />
+            <Avatar image={userData.profilePicture} size={25} />
             <Text
               fontSize={"md"}
               fontWeight={"medium"}
@@ -35,7 +35,7 @@ export default function DrawerCom({ onClose, isOpen, size, userData }) {
               fontWeight={"normal"}
               color={"blackAlpha.700"}
             >
-              {userData.profusion}
+              {userData.profession}
             </Text>
           </Box>
           <Box mt={"5%"}>
