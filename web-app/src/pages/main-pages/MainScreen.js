@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from "react";
+import React, { useRef } from "react";
 import "../../app.css";
 import { Box, useDimensions } from "@chakra-ui/react";
 import SliderCom from "../../components/Slider/Slider";
@@ -35,17 +35,7 @@ export default function MainScreen() {
         }}
         width={displayCondition ? "100%" : "70%"}
       >
-        {isChat ? (
-          // Chat UI
-          <Chat
-            chatUser={chatUser}
-            chatMessage={chatMessage}
-            setChatMessage={setChatMessage}
-          />
-        ) : (
-          // Is Not Chat UI
-          <DefaultChat />
-        )}
+        {isChat ? <Chat /> : <DefaultChat />}
       </Box>
 
       {displayCondition && (

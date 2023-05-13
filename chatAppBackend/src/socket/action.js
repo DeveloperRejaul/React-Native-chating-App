@@ -6,3 +6,5 @@ module.exports.RECEIVE_MESSAGE = "receiveMessage";
 module.exports.TYPING = "typing";
 module.exports.STOP_TYPING = "stopTyping";
 module.exports.LAST_MESSAGE = "lastMessage";
+module.exports.SEND_LAST_MESSAGE = "sendLastMessage";
+module.exports.RECEIVE_LAST_MESSAGE = "receiveLastMessage";

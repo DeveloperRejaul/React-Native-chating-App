@@ -6,36 +6,14 @@ import { headerHeight } from "./constences";
 import "../../app.css";
 import { useSelector } from "react-redux";
 import { useChatContext } from "../../context/ChatContext";
-import {
-  useGetAllUsersQuery,
-  useGetAllLastMessageQuery,
-} from "../../redux/services/chatApi";
-import { Time } from "../../utilits/timeConvater";
-import moment from "moment";
-import { LAST_MESSAGE } from "../../constants/action";
+import { useGetAllUsersQuery } from "../../redux/services/chatApi";
 
 function Users({ display }) {
   const [users, setUsers] = useState([]);
-  const userId = useSelector((state) => state.auth.id);
   const { data, isSuccess } = useGetAllUsersQuery();
-  const lastMessages = useGetAllLastMessageQuery(userId) || {};
-  const { chatMessage, isChatting, socket, setIsChat, setChatUser, slider } =
-    useChatContext();
+
+  const { setIsChat, setChatUser } = useChatContext();
   const receiveMessageUserId = useRef(null);
-
-  console.log(chatMessage[chatMessage.length - 1]?.text);
-
-  // useEffect(() => {
-  //   socket.current?.on(LAST_MESSAGE, (message, receiverId) => {
-  //     // const updatedData = users.map((data) =>
-  //     //   data._id === receiverId ? { ...data, message, time: moment() } : data
-  //     // );
-  //     // setUsers(updatedData);
-  //   });
-  //   return () => {
-  //     socket.current?.off(LAST_MESSAGE);
-  //   };
-  // }, []);
 
   // get user info
   const user = useSelector((state) => state.auth);
@@ -44,36 +22,9 @@ function Users({ display }) {
   useEffect(() => {
     if (data) {
       const newUser = data?.users;
-      const messages = lastMessages?.data?.lastMessagesInfo || [];
-      const updatedUsers = newUser.map((user) => {
-        const { _id } = user;
-        const lastMessage = messages?.find((m) => m.receiverId === _id);
-        return {
-          ...user,
-          message: lastMessage?.lastMessage,
-          time: lastMessage?.time,
-        };
-      });
-
-      setUsers([...updatedUsers]);
+      setUsers([...newUser]);
     }
-  }, [isSuccess, lastMessages]);
-
-  useEffect(() => {
-    if (isChatting) {
-      const lastMessage =
-        chatMessage[chatMessage.length - 1] !== undefined &&
-        chatMessage[chatMessage.length - 1];
-
-      const updatedData = users.map((data) =>
-        data._id === lastMessage?.receiverId
-          ? { ...data, message: lastMessage.text, time: lastMessage.time }
-          : data
-      );
-
-      setUsers(updatedData);
-    }
-  }, [isChatting, chatMessage]);
+  }, [isSuccess]);
 
   const handleClick = (data) => {
     setIsChat(true);
@@ -116,7 +67,7 @@ function Users({ display }) {
               >
                 <Avatar
                   image={ele.profilePicture}
-                  isOnline={(ele.status = "ofline" ? false : true)}
+                  isOnline={ele.status == "ofline" ? false : true}
                 />
                 <VStack w={"100%"}>
                   <HStack justifyContent={["space-between"]} width={"100%"}>
@@ -128,17 +79,7 @@ function Users({ display }) {
                     >
                       {ele.name}
                     </Text>
-                    <Text
-                      color={"black"}
-                      fontSize={["sm"]}
-                      fontWeight={["normal"]}
-                    >
-                      {Time.timeDiff(ele.time)}
-                    </Text>
                   </HStack>
-                  <Text style={{ marginLeft: "10px" }} alignSelf={"flex-start"}>
-                    {ele.message}
-                  </Text>
                 </VStack>
               </div>
             );

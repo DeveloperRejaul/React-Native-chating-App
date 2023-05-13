@@ -6,7 +6,6 @@ import { BsSendFill } from "react-icons/bs";
 import { headerHeight } from "./constences";
 import { IoEllipsisVertical } from "react-icons/io5";
 import { useSelector } from "react-redux";
-import moment from "moment";
 import {
   useCreateChatMessageMutation,
   useCreateRoomMutation,
@@ -25,7 +24,7 @@ import {
 } from "../../constants/action";
 import LottieCom from "../../components/Lottie/Lottie";
 
-function Chat({ chatUser = {} }) {
+function Chat() {
   const [typing, setTyping] = useState(false);
   const [typingEffect, setTypingEffect] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -33,10 +32,34 @@ function Chat({ chatUser = {} }) {
   const [createChatMessage, _] = useCreateChatMessageMutation();
   const [createRoom, response] = useCreateRoomMutation();
   const myId = useSelector((state) => state.auth.id);
-  const receiveMessageUserId = chatUser._id;
-  const { chatMessage, setChatMessage, socket, setIsChatting } =
+  const { chatMessage, setChatMessage, socket, setIsChatting, chatUser } =
     useChatContext();
   const timeoutIdRef = useRef(null);
+
+  const receiveMessageUserId = chatUser._id;
+
+  useEffect(() => {
+    socket.current.on(RECEIVE_MESSAGE, (message) => {
+      setChatMessage((pre) => [
+        ...pre,
+        { sender: receiveMessageUserId, text: message },
+      ]);
+    });
+
+    socket.current.on(TYPING, () => {
+      setTypingEffect(true);
+    });
+
+    socket.current.on(STOP_TYPING, () => {
+      setTypingEffect(false);
+    });
+
+    return () => {
+      socket.current.off(RECEIVE_MESSAGE);
+      socket.current.off(TYPING);
+      socket.current.off(STOP_TYPING);
+    };
+  }, []);
 
   useEffect(() => {
     if (receiveMessageUserId) {
@@ -67,28 +90,18 @@ function Chat({ chatUser = {} }) {
     init();
   }, [response.status]);
 
+  // handle send Message
   const handelSendMessage = async () => {
     socket.current.emit(STOP_TYPING, "stop typing", response.data);
     clearTimeout(timeoutIdRef.current);
     if (inputValue !== "") {
-      setChatMessage((pre) => [
-        ...pre,
-        {
-          sender: myId,
-          text: inputValue,
-          receiverId: receiveMessageUserId,
-          time: moment(),
-        },
-      ]);
       setIsChatting(true);
+
+      setChatMessage((pre) => [...pre, { sender: myId, text: inputValue }]);
+
       setInputValue("");
       if (response.status === "fulfilled") {
-        socket.current.emit(
-          SEND_MESSAGE,
-          response.data,
-          inputValue,
-          receiveMessageUserId
-        );
+        socket.current.emit(SEND_MESSAGE, response.data, inputValue);
         createChatMessage({
           text: inputValue,
           sender: myId,
@@ -122,27 +135,6 @@ function Chat({ chatUser = {} }) {
     }
     if (e?.key === "Enter") handelSendMessage();
   };
-
-  useEffect(() => {
-    socket.current.on(RECEIVE_MESSAGE, (message) => {
-      setChatMessage((pre) => [
-        ...pre,
-        { sender: receiveMessageUserId, text: message },
-      ]);
-    });
-    socket.current.on(TYPING, () => {
-      setTypingEffect(true);
-    });
-
-    socket.current.on(STOP_TYPING, () => {
-      setTypingEffect(false);
-    });
-    return () => {
-      socket.current.off(RECEIVE_MESSAGE);
-      socket.current.off(TYPING);
-      socket.current.off(STOP_TYPING);
-    };
-  }, []);
 
   return (
     <Box

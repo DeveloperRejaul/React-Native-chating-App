@@ -12,6 +12,7 @@ const { Room } = require("../../models/model");
  */
 const getLastMessageController = async (req, res) => {
   const userId = req.params.userId;
+
   try {
     const allRooms = await Room.find({ members: { $all: [userId] } })
       .select({
@@ -20,20 +21,11 @@ const getLastMessageController = async (req, res) => {
       })
       .populate("messages", "createdAt text -_id");
 
-    const lastMessagesInfo = await allRooms.map((data) => {
-      const receiverId = data.members.filter((id) => id != userId);
-      const lastMessage = data.messages[data.messages.length - 1];
-      return {
-        receiverId: receiverId[0],
-        lastMessage: lastMessage.text,
-        time: lastMessage.createdAt,
-      };
-    });
-    res.send({ lastMessagesInfo });
+    await res.send({ allRooms });
   } catch (error) {
     console.log(error.message);
+    await res.send({ error: error.message });
   }
 };
-// id != userId
 
 module.exports = getLastMessageController;
